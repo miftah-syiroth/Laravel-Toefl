@@ -19,13 +19,13 @@ module.exports = {
 
     variants: {
         extend: {
-            opacity: ["disabled"],
+            opacity: ["active"],
+            backgroundColor: ["active"],
         },
     },
 
     plugins: [
         require("@tailwindcss/forms"),
         require("@tailwindcss/typography"),
-        require("@tailwindcss/custom-forms"),
     ],
 };

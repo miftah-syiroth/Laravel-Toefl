@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Section;
 use App\Models\Toefl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -52,7 +53,14 @@ class ToeflController extends Controller
     // fungsi untuk melihat detil toefl
     public function show(Toefl $toefl)
     {
-        return view('admin.toefl.show');
+        $sections = Section::with(['subSections'])->get();
+
+        $total_question = 0;
+        foreach ($sections as $key => $section) {
+            $total_question += $section->total_question;
+        }
+        
+        return view('admin.toefl.show', compact("toefl", "sections", "total_question"));
     }
 
     // fungsi edit toefl

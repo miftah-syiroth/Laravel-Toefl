@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ToeflController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,11 +24,15 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 })->name('dashboard');
 
 Route::prefix('/admin')->group(function () {
-    Route::get('/toefls', [ToeflController::class, 'index'])->name('toefl.index');
-    Route::get('/toefls/create', [ToeflController::class, 'create'])->name('toefl.create');
-    Route::post('/toefls', [ToeflController::class, 'store'])->name('toefl.store');
-    Route::get('toefls/{toefl}', [ToeflController::class, 'show'])->name('toefl.show');
-    Route::get('/toefls/{toefl}/edit', [ToeflController::class, 'edit'])->name('toefl.edit');
-    Route::put('/toefls/{toefl}', [ToeflController::class, 'update'])->name('toefl.update');
-    Route::delete('/toefls/{toefl}', [ToeflController::class, 'destroy'])->name('toefl.destroy');
+    // routing toefls
+    Route::get('/toefls', [ToeflController::class, 'index'])->name('toefls.index');
+    Route::get('/toefls/create', [ToeflController::class, 'create'])->name('toefls.create');
+    Route::post('/toefls', [ToeflController::class, 'store'])->name('toefls.store');
+    Route::get('toefls/{toefl}', [ToeflController::class, 'show'])->name('toefls.show');
+    Route::get('/toefls/{toefl}/edit', [ToeflController::class, 'edit'])->name('toefls.edit');
+    Route::put('/toefls/{toefl}', [ToeflController::class, 'update'])->name('toefls.update');
+    Route::delete('/toefls/{toefl}', [ToeflController::class, 'destroy'])->name('toefls.destroy');
+
+    // routing question
+    Route::get('/toefls/{toefl}/sections/{section}/questions/create', [QuestionController::class, 'create']);
 });
