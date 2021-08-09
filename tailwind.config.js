@@ -21,6 +21,7 @@ module.exports = {
         extend: {
             opacity: ["active"],
             backgroundColor: ["active"],
+            padding: ["hover"],
         },
     },
 

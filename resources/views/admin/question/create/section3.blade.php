@@ -9,9 +9,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="border-2 py-4">
-                    <livewire:question.section3.passage-form :toefl="$toefl" :section="$section"/>
+                    <livewire:question.section3 :toefl="$toefl" :section="$section"/>
                 </div>
-                <div class="border-2 py-4">
+                {{-- <div class="border-2 py-4">
                     <livewire:question.section3.passage-navigation :toefl="$toefl" :section="$section"/>
                 </div>
                 <div class="border-2 py-4">
@@ -19,7 +19,7 @@
                 </div>
                 <div class="border-2 py-4">
                     <livewire:question.section3.question-navigation :toefl="$toefl" :section="$section"/>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
