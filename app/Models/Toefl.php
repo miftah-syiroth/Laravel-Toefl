@@ -31,4 +31,15 @@ class Toefl extends Model
     {
         return $this->hasMany(Passage::class);
     }
+
+    // banyak toefl dimiliki oleh banyak kelas
+    public function classes()
+    {
+        return $this->belongsToMany(Kelas::class, 'kelas_has_toefls', 'toefl_id', 'kelas_id');
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }

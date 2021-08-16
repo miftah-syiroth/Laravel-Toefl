@@ -3,16 +3,18 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
+
+                @role('admin')
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('admin.dashboard') }}">
                         <x-jet-application-mark class="block h-9 w-auto" />
                     </a>
                 </div>
 
-                <!-- Navigation Links -->
+                <!-- Navigation Links For Admin Role -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-jet-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                    <x-jet-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
                         {{ __('Dashboard') }}
                     </x-jet-nav-link>
                 </div>
@@ -22,6 +24,36 @@
                         {{ __('Toelfs') }}
                     </x-jet-nav-link>
                 </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-jet-nav-link href="{{ route('kelas.index') }}" :active="request()->routeIs('kelas.*')">
+                        {{ __('Kelas') }}
+                    </x-jet-nav-link>
+                </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-jet-nav-link href="{{ route('participants.index') }}" :active="request()->routeIs('participants.*')">
+                        {{ __('Peserta') }}
+                    </x-jet-nav-link>
+                </div>
+
+                @else
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="{{ route('participant.dashboard') }}">
+                        <x-jet-application-mark class="block h-9 w-auto" />
+                    </a>
+                </div>
+
+                <!-- Navigation Links For Admin Role -->
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-jet-nav-link href="{{ route('participant.dashboard') }}" :active="request()->routeIs('participant.dashboard')">
+                        {{ __('Dashboard') }}
+                    </x-jet-nav-link>
+                </div>
+
+                @endrole
+                
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ml-6">
@@ -102,6 +134,10 @@
                                 {{ __('Manage Account') }}
                             </div>
 
+                            <x-jet-dropdown-link>
+                                {{ Auth::user()->getPermissionNames()->first() }}
+                            </x-jet-dropdown-link>
+
                             <x-jet-dropdown-link href="{{ route('profile.show') }}">
                                 {{ __('Profile') }}
                             </x-jet-dropdown-link>
@@ -143,10 +179,21 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+        
         <div class="pt-2 pb-3 space-y-1">
-            <x-jet-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+            @role('admin')
+
+            <x-jet-responsive-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
                 {{ __('Dashboard') }}
             </x-jet-responsive-nav-link>
+            
+            @else
+
+            <x-jet-responsive-nav-link href="{{ route('participant.dashboard') }}" :active="request()->routeIs('participant.dashboard')">
+                {{ __('Dashboard') }}
+            </x-jet-responsive-nav-link>
+            @endrole
+            
         </div>
 
         <!-- Responsive Settings Options -->

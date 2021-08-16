@@ -23,14 +23,25 @@ class CreateNewUser implements CreatesNewUsers
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'phone' => ['required', 'numeric'],
+            'address' => ['required', 'string'],
             'password' => $this->passwordRules(),
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
         ])->validate();
-
-        return User::create([
+        
+        $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
+            'phone' => $input['phone'],
+            'address' => $input['address'],
             'password' => Hash::make($input['password']),
         ]);
+
+        $user->assignRole('participant'); // user akan diberi role participant
+
+        // role particpant dengan permission mendaftar kelas. Hal ini berguna untuk mengatasi peserta mendaftar tanpa membayar
+        $user->givePermissionTo('registrasi kelas'); 
+        
+        return $user;
     }
 }

@@ -11,15 +11,6 @@
                 <div class="border-2 py-4">
                     <livewire:question.section3 :toefl="$toefl" :section="$section"/>
                 </div>
-                {{-- <div class="border-2 py-4">
-                    <livewire:question.section3.passage-navigation :toefl="$toefl" :section="$section"/>
-                </div>
-                <div class="border-2 py-4">
-                    <livewire:question.section3.question-form :toefl="$toefl" :section="$section"/>
-                </div>
-                <div class="border-2 py-4">
-                    <livewire:question.section3.question-navigation :toefl="$toefl" :section="$section"/>
-                </div> --}}
             </div>
         </div>
     </div>
