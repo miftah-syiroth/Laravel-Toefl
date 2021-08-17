@@ -46,4 +46,10 @@ class Question extends Model
     {
         return $this->belongsTo(Toefl::class);
     }
+
+    // many to many
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'answers', 'question_id', 'user_id')->withPivot('answer', 'score')->withTimestamps();
+    }
 }

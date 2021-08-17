@@ -22,6 +22,8 @@ class Index extends Component
         $user->update(['toefl_id' => $toefl_id]);
         // ubah permission dari user tsb ke do toefl
         $user->syncPermissions('do toefl');
+
+        $this->participants = User::role('participant')->get();
     }
 
     public function mount()

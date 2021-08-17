@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\Livewire\Question\Section1;
+namespace App\Http\Livewire\Question;
 
 use App\Models\Question;
-use App\Models\SubSection;
 use App\Models\Toefl;
 use Livewire\Component;
 
-class QuestionForm extends Component
+class Section1 extends Component
 {
     public $toefl; // passed from view or route or url
     public $section; // passed from view or route or url
-    public $subSection = 3; // passed from event switch sub section, defaultnya part A
+
+    public $subSection = 3; // set awal sub section pada part A
     public $questionSelected; // soal yang dipilih untuk diedit
+    public $questions; // menampung questions untuk navigasi
 
     /**properti untuk tabel questions */
     public $option_a;
@@ -20,13 +21,6 @@ class QuestionForm extends Component
     public $option_c;
     public $option_d;
     public $key_answer;
-
-    //  listeners yang berasal dari navigasi sub section
-    protected $listeners = [
-        'switchSubSection',
-        'switchQuestion',
-        'newQuestion',
-    ];
 
     // rules validasi input form
     protected $rules = [
@@ -37,20 +31,46 @@ class QuestionForm extends Component
         'key_answer' => 'required',
     ];
 
-    // fungsi action save dari form
-     public function save()
-     {
-        //  validasi dulu
-        $this->validate();
+    public function switchSubSection()
+    {
+        $this->reset(['option_a', 'option_b', 'option_c', 'option_d', 'key_answer', 'questionSelected']);
+        $this->questions = $this->toefl->questions()->where('sub_section_id', $this->subSection)->get();
+    }
 
-        /**kalau ada pertanyaan terdahulu yang dipilih untuk diubah, maka update soal tersebut*/
-        if ($this->questionSelected) {
-            $this->update();
-        } else {
-            /**simpan soal baru */
-            $this->store();
-        }
-     }
+    // tombol pindah soal
+    public function switchQuestion(Question $question)
+    {
+        /**isi form dengan isi row dari question yang dipilih */
+        $this->option_a = $question->option_a;
+        $this->option_b = $question->option_b;
+        $this->option_c = $question->option_c;
+        $this->option_d = $question->option_d;
+        $this->key_answer = $question->key_answer;
+
+        /**questionSelected menyimpan collection soal yang akan diupdate atau dipilih dari navigasi soal */
+        $this->questionSelected = $question;
+    }
+
+    // mengosongkan form input soal baru
+    public function newQuestion()
+    {
+        $this->reset(['option_a', 'option_b', 'option_c', 'option_d', 'key_answer', 'questionSelected']);
+    }
+
+    // fungsi action save dari form
+    public function save()
+    {
+       //  validasi dulu
+       $this->validate();
+
+       /**kalau ada pertanyaan terdahulu yang dipilih untuk diubah, maka update soal tersebut*/
+       if ($this->questionSelected) {
+           $this->update();
+       } else {
+           /**simpan soal baru */
+           $this->store();
+       }
+    }
 
     //  fungsi menyimpan soal baru
     public function store()
@@ -69,8 +89,7 @@ class QuestionForm extends Component
         // hapus field input
         $this->reset(['option_a', 'option_b', 'option_c', 'option_d', 'key_answer']);
         // update database dan emit ke komponen navigasi soal
-        $questions = Toefl::find($this->toefl->id)->questions()->where('sub_section_id', $this->subSection)->get();
-        $this->emit('questionAdded', $questions);
+        $this->questions = Toefl::find($this->toefl->id)->questions()->where('sub_section_id', $this->subSection)->get();
     }
 
     //  fungsi mengupdate soal yang dipilih dari navigasi soal
@@ -96,39 +115,16 @@ class QuestionForm extends Component
         $this->reset(['option_a', 'option_b', 'option_c', 'option_d', 'key_answer', 'questionSelected']);
         
         /**update jumlah questionnya, biar update harus akses model dulu, kalau pakai toefl instance sebelumnya ga bakan update */
-        $questions = Toefl::find($this->toefl->id)->questions()->where('sub_section_id', $this->subSection)->get();
-        $this->emit('questionDeleted', $questions);
+        $this->questions = Toefl::find($this->toefl->id)->questions()->where('sub_section_id', $this->subSection)->get();
     }
 
-    //  listener switch sub section dari komponen sub section navigation
-    public function switchSubSection($subSection)
+    public function mount($toefl)
     {
-        $this->subSection = $subSection;
-        $this->reset(['option_a', 'option_b', 'option_c', 'option_d', 'key_answer', 'questionSelected']);
-    }
-
-    // listener dari switch question dari komponen Sub section question navigation
-    public function switchQuestion(Question $question)
-    {
-        /**isi form dengan isi row dari question yang dipilih */
-        $this->option_a = $question->option_a;
-        $this->option_b = $question->option_b;
-        $this->option_c = $question->option_c;
-        $this->option_d = $question->option_d;
-        $this->key_answer = $question->key_answer;
-
-        /**questionSelected menyimpan collection soal yang akan diupdate atau dipilih dari navigasi soal */
-        $this->questionSelected = $question;
-    }
-
-    // listener new question dari navigasi soal. digunakan untuk membersihkan form
-    public function newQuestion()
-    {
-        $this->reset(['option_a', 'option_b', 'option_c', 'option_d', 'key_answer', 'questionSelected']);
+        $this->questions = $toefl->questions()->where('sub_section_id', $this->subSection)->get();
     }
 
     public function render()
     {
-        return view('livewire.question.section1.question-form');
+        return view('livewire.question.section1');
     }
 }

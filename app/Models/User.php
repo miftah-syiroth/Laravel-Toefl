@@ -76,4 +76,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Kelas::class, 'kelas_id');
     }
+    
+    // many to many
+    public function questions()
+    {
+        return $this->belongsToMany(Question::class, 'answers', 'user_id', 'question_id')->withPivot('answer', 'score')->withTimestamps();
+    }
 }

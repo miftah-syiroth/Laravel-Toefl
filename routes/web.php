@@ -29,21 +29,19 @@ Route::get('/', function () {
 
 // Route::get('/home', [PageController::class, 'home']);
 
+Route::get('/participant/{kelas}/register', [UserController::class, 'participantRegister']);
+Route::post('/participant/{kelas}', [UserController::class, 'storeParticipantRegister']);
+
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::prefix('/participant')->group(function () {
-        
-        Route::get('/kelas/{kelas}/register', [UserController::class, 'kelasRegister'])->middleware(['role:participant', 'permission:registrasi kelas']); 
-        Route::patch('/kelas/{kelas}/register', [UserController::class, 'storeKelasRegister'])->middleware(['role:participant', 'permission:registrasi kelas']);
-
-        Route::get('/participants', [ParticipantController::class, 'index'])->name('participants.index');
 
         Route::get('/dashboard', function () {
             return view('participant.dashboard');
         })->name('participant.dashboard');
     });
     
-    Route::prefix('/admin')->group(function () {
+    Route::prefix('/admin')->middleware(['role:admin'])->group(function () {
 
         Route::get('/dashboard', function () {
             return view('admin.dashboard');
@@ -69,6 +67,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/kelas/{kelas}/edit', [KelasController::class, 'edit'])->name('kelas.edit');
         Route::put('/kelas/{kelas}', [KelasController::class, 'update'])->name('kelas.update');
         Route::delete('/kelas/{kelas}', [KelasController::class, 'destroy'])->name('kelas.destroy');
+
+        Route::get('/participants',[ParticipantController::class, 'index'])->name('participants.index');
     });
 
 });

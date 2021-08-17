@@ -8,15 +8,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <div class="border-2 py-4">
-                    <livewire:question.section2.sub-section-navigation :toefl="$toefl" :section="$section"/>
-                </div>
-                <div class="border-2 py-4">
-                    <livewire:question.section2.question-form :toefl="$toefl" :section="$section"/>
-                </div>
-                <div class="border-2 py-4">
-                    <livewire:question.section2.question-navigation :toefl="$toefl" :section="$section"/>
-                </div>
+                <livewire:question.section2 :toefl="$toefl" :section="$section"/>
             </div>
         </div>
     </div>

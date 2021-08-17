@@ -55,7 +55,10 @@
                                 <div class="text-md font-medium text-indigo-600">2 Orang lagi</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                <a href="/participant/kelas/{{ $kelas->id }}/register" class="text-indigo-600 hover:text-indigo-900">
+                                {{-- <a href="/participant/kelas/{{ $kelas->id }}/register" class="text-indigo-600 hover:text-indigo-900">
+                                    Daftar
+                                </a> --}}
+                                <a href="/participant/{{ $kelas->id }}/register" class="text-indigo-600 hover:text-indigo-900">
                                     Daftar
                                 </a>
                             </td>
