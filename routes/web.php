@@ -39,6 +39,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/dashboard', function () {
             return view('participant.dashboard');
         })->name('participant.dashboard');
+
+        Route::get('/toefls/listening-comprehension', [ToeflController::class, 'section1Exam']);
+        Route::get('/toefls/structure-and-written-expression', [ToeflController::class, 'section2Exam']);
+        Route::get('/toefls/reading-comprehension', [ToeflController::class, 'section3Exam']);
     });
     
     Route::prefix('/admin')->middleware(['role:admin'])->group(function () {

@@ -80,6 +80,6 @@ class User extends Authenticatable
     // many to many
     public function questions()
     {
-        return $this->belongsToMany(Question::class, 'answers', 'user_id', 'question_id')->withPivot('answer', 'score')->withTimestamps();
+        return $this->belongsToMany(Question::class, 'answers', 'user_id', 'question_id')->withPivot('answer', 'score', 'last_minute', 'last_question');
     }
 }

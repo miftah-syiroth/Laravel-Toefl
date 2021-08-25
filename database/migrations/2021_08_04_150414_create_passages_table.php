@@ -15,7 +15,7 @@ class CreatePassagesTable extends Migration
     {
         Schema::create('passages', function (Blueprint $table) {
             $table->id();
-            $table->text('passage');
+            $table->text('passage')->nullable();
             $table->foreignId('toefl_id')->constrained('toefls');
             $table->timestamps();
         });

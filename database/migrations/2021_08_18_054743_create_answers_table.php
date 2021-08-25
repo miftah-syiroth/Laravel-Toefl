@@ -18,7 +18,8 @@ class CreateAnswersTable extends Migration
             $table->foreignId('question_id')->constrained('questions');
             $table->string('answer')->nullable();
             $table->integer('score')->nullable();
-            $table->timestamps();
+            $table->integer('last_minute');
+            $table->string('last_question');
         });
     }
 

@@ -6,6 +6,7 @@ use App\Models\Section;
 use App\Models\Toefl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ToeflController extends Controller
@@ -102,8 +103,174 @@ class ToeflController extends Controller
     {
         Storage::delete($toefl->section_1_track); // hapus track lama toefl dari storage
 
+        // hapus questionny
+        $toefl->questions()->delete();
+
         $toefl->delete(); // hapus row
 
         return redirect('/admin/toefls');
+    }
+
+    public function examination()
+    {
+        # controller digunakan untuk membatasi akses via url, daripada membatasi di route
+        # cek apakah pekerjaan baru atau sedang mengerjakan, atau sudah selesai
+        # ambil soal terakhir, value null jika pekerjaan baru, retrive a row jika sudah pernah mengerjakan
+        $lastQuestion = Auth::user()->questions()->orderBy('question_id', 'desc')->first();
+
+        if ($lastQuestion) { # jika retrive a row, masih ada kemungkinan lanjut atau sudah selesai
+            # exam selesai, yaitu jika waktu pelaksanaan habis, atau ATAU berada pada section 3 soal ke 50 ATAU section 3 dgn last_minute <=0. SYARAT PERTAMA BELUM DIIMPLEMENTASI
+            if ($lastQuestion->section_id == 3 && ($lastQuestion->pivot->last_question >= 49 || $lastQuestion->pivot->last_minute <= 0)) { 
+                return redirect('/participant/dashboard');
+            } else { # exam belum tuntas tp masih ada kesempatan waktu
+                // cek lg untuk tiap2 section
+                if ($lastQuestion->section_id == 1) { // jika belum selesai di section 1
+                    // cek lg barangkali udh selesai di akhir soal atau kehabisa waktu
+                    if ($lastQuestion->pivot->last_question >= 49 || $lastQuestion->pivot->last_minute <= 0) {
+                        return redirect()->to('/participant/toefls/structure-and-written-expression');
+                    } else {
+                        return redirect()->to('/participant/toefls/listening-comprehension');
+                    }
+                    
+                } elseif ($lastQuestion->section_id == 2) { // section 2
+                    // cek lg barangkali udh di akhir soal atau kehabisan waktu
+                    if ($lastQuestion->pivot->last_question >= 39 || $lastQuestion->pivot->last_minute <= 0) {
+                        return redirect()->to('/participant/toefls/reading-comprehension');
+                    } else { // belum selesai dan masih ada waktu
+                        return redirect()->to('/participant/toefls/structure-and-written-expression');
+                    }
+                } else { // section 3
+                    // cek lg barangkali udh di akhir soal atau kehabisan waktu
+                    // if ($lastQuestion->pivot->last_question >= 49 || $lastQuestion->pivot->last_minute <= 0) {
+                    //     return redirect()->to('/participant/dashboard');
+                    // } else { // belum selesai dan masih ada waktu
+                    //     return redirect()->to('/participant/toefls/reading-comprehension');
+                    // }
+                    return view('participant.toefl-worksheet.section3');
+                }
+            }
+            
+        } else { # jika null, artinya perkejaan baru. start dari section 1
+            return view('participant.toefl-worksheet.section1');
+        }
+        
+    }
+
+    public function examValidation()
+    {
+        $lastQuestion = Auth::user()->questions()->orderBy('question_id', 'desc')->first();
+
+    }
+
+    public function section1Exam()
+    {
+        // batasi akses fungsi ini ketika pekerjaan sudah selesai atau sedang mengerjakan section lain
+        # selesai adalah jika melewati waktu pelaksanaan ATAU berada pada section 3 soal ke 50 ATAU section 3 dgn last_minute <=0. SYARAT PERTAMA BELUM DIIMPLEMENTASI
+        # cek jika waktu pengerjaan sudah berakhir
+
+        $lastQuestion = Auth::user()->questions()->orderBy('question_id', 'desc')->first();
+
+        if ($lastQuestion) {
+            #cek kalau udah selesai garapnya
+            if ($lastQuestion->section_id == 3 && ($lastQuestion->pivot->last_question >= 49 || $lastQuestion->pivot->last_minute <= 0)) {
+                return redirect('/participant/dashboard');
+            }
+
+            # masih section_id 1 tp udah selesai garapannya atau kehabisan waktu di section 1. = ui section 2
+            if ($lastQuestion->section_id == 1 && ($lastQuestion->pivot->last_question >= 49 || $lastQuestion->pivot->last_minute <= 0)) {
+                return redirect()->to('/participant/toefls/structure-and-written-expression');
+            }
+
+            # di section_id 2 dan belum selesai = ui section 2
+            if ($lastQuestion->section_id == 2 && ($lastQuestion->pivot->last_question < 39 && $lastQuestion->pivot->last_minute > 0)) {
+                return redirect()->to('/participant/toefls/structure-and-written-expression');
+            }
+
+            # di section_id 2 tp udah selesai garapannya atau kehabisan waktu di section 2. = ui section 3
+            if ($lastQuestion->section_id == 2 && ($lastQuestion->pivot->last_question >= 39 || $lastQuestion->pivot->last_minute <= 0)) {
+                return redirect()->to('/participant/toefls/reading-comprehension');
+            }
+
+            # di section_id 3 dan belum selesai
+            if ($lastQuestion->section_id == 3 && ($lastQuestion->pivot->last_question < 49 && $lastQuestion->pivot->last_minute > 0)) {
+                return redirect()->to('/participant/toefls/reading-comprehension');
+            }
+        }
+        
+        return view('participant.toefl-worksheet.section1');
+    }
+
+    public function section2Exam()
+    {
+        // batasi akses fungsi ini ketika pekerjaan sudah selesai atau sedang mengerjakan section lain
+        # selesai adalah jika melewati waktu pelaksanaan ATAU berada pada section 3 soal ke 50 ATAU section 3 dgn last_minute <=0. SYARAT PERTAMA BELUM DIIMPLEMENTASI
+        # cek jika waktu pengerjaan sudah berakhir
+
+        #cek perkejaan baru, kembalikan ke pekerjaan semestinya atau sudah selesai
+        $lastQuestion = Auth::user()->questions()->orderBy('question_id', 'desc')->first();
+
+        if ($lastQuestion) {
+            #cek kalau udah selesai garapnya
+            if ($lastQuestion->section_id == 3 && ($lastQuestion->pivot->last_question >= 49 || $lastQuestion->pivot->last_minute <= 0)) {
+                return redirect('/participant/dashboard');
+            }
+
+            # masih section_id 1, soal belum selesai dan waktu masih sisa (ui section 1)
+            if ($lastQuestion->section_id == 1 && ($lastQuestion->pivot->last_question < 49 && $lastQuestion->pivot->last_minute > 0)) {
+                return redirect()->to('/participant/toefls/listening-comprehension');
+            }
+
+            # di section_id 2 tp udah selesai garapannya atau kehabisan waktu di section 2. (ui section 3)
+            if ($lastQuestion->section_id == 2 && ($lastQuestion->pivot->last_question >= 39 || $lastQuestion->pivot->last_minute <= 0)) {
+                return redirect()->to('/participant/toefls/reading-comprehension');
+            }
+
+            # di section_id 3 dan belum selesai. = ui section 3
+            if ($lastQuestion->section_id == 3 && ($lastQuestion->pivot->last_question < 49 && $lastQuestion->pivot->last_minute > 0)) {
+                return redirect()->to('/participant/toefls/reading-comprehension');
+            }
+
+            return view('participant.toefl-worksheet.section2');
+
+        } else { # soal baru, masih kosong semua
+            return redirect('/participant/dashboard');
+        }
+
+    }
+
+    public function section3Exam()
+    {
+        // batasi akses fungsi ini ketika pekerjaan sudah selesai atau sedang mengerjakan section lain
+        # selesai adalah jika melewati waktu pelaksanaan ATAU berada pada section 3 soal ke 50 ATAU section 3 dgn last_minute <=0. SYARAT PERTAMA BELUM DIIMPLEMENTASI
+        # cek jika waktu pengerjaan sudah berakhir
+        #cek perkejaan baru, kembalikan ke pekerjaan semestinya atau sudah selesai
+        $lastQuestion = Auth::user()->questions()->orderBy('question_id', 'desc')->first();
+
+        if ($lastQuestion) {
+            #cek kalau udah selesai garapnya
+            if ($lastQuestion->section_id == 3 && ($lastQuestion->pivot->last_question >= 49 || $lastQuestion->pivot->last_minute <= 0)) {
+                return redirect('/participant/dashboard');
+            }
+
+            # masih section_id 1, soal belum selesai dan waktu masih sisa (section 1)
+            if ($lastQuestion->section_id == 1 && ($lastQuestion->pivot->last_question < 49 && $lastQuestion->pivot->last_minute > 0)) {
+                return redirect()->to('/participant/toefls/listening-comprehension');
+            }
+
+            # masih section_id 1, soal sudah selesai atau kehabisa waktu (section 2)
+            if ($lastQuestion->section_id == 1 && ($lastQuestion->pivot->last_question >= 49 || $lastQuestion->pivot->last_minute <= 0)) {
+                return redirect()->to('/participant/toefls/structure-and-written-expression');
+            }
+
+            # masih section_id 2, soal belum selesai atau waktu masih tersedia (section 2)
+            if ($lastQuestion->section_id == 2 && ($lastQuestion->pivot->last_question < 39 && $lastQuestion->pivot->last_minute > 0)) {
+                return redirect()->to('/participant/toefls/structure-and-written-expression');
+            }
+
+            return view('participant.toefl-worksheet.section3');
+            
+        } else { # soal baru, masih kosong semua
+            return redirect('/participant/dashboard');
+        }
     }
 }
