@@ -8,7 +8,7 @@ use Livewire\Component;
 class Section2 extends Component
 {
     // 1500
-    public $timer = 1500, $menit, $detik;
+    public $timer = 10, $menit, $detik;
 
     public $toefl;
 
@@ -66,11 +66,10 @@ class Section2 extends Component
         $lastQuestion = Auth::user()->questions()->orderBy('question_id', 'desc')->first();
 
         // $this->index = $lastQuestion->section_id != 2 ? 0 : $lastQuestion->pivot->last_question + 1;
-        if ($lastQuestion->section_id != 2) {
-            $this->index = 0;
-            $this->timer = $lastQuestion->pivot->last_minute;
-        } else {
+        // kalau section_id dari soal sebelumnya adalah 2, maka timer set pada menit terakhir dan index pada soal terakhir + 1. sedangkan jika bukan section_2 (section_1) maka index dibuat 0 atau index pertama, dan timer mengikuti nilai default.
+        if ($lastQuestion->section_id == 2) {
             $this->index = $lastQuestion->pivot->last_question + 1;
+            $this->timer = $lastQuestion->pivot->last_minute;
         }
 
         $this->question = $this->toefl->questions()->find($this->arrayOfQuestions[$this->index]);

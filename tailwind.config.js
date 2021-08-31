@@ -17,14 +17,6 @@ module.exports = {
         },
     },
 
-    variants: {
-        extend: {
-            opacity: ["active"],
-            backgroundColor: ["active"],
-            padding: ["hover"],
-        },
-    },
-
     plugins: [
         require("@tailwindcss/forms"),
         require("@tailwindcss/typography"),

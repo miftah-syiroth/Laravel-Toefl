@@ -2001,7 +2001,7 @@ var Alpine = {
   get raw() {
     return raw;
   },
-  version: "3.2.3",
+  version: "3.2.4",
   disableEffectScheduling,
   setReactivityEngine,
   addRootSelector,
@@ -2121,7 +2121,7 @@ function setStylesFromObject(el, value) {
   let previousStyles = {};
   Object.entries(value).forEach(([key, value2]) => {
     previousStyles[key] = el.style[key];
-    el.style.setProperty(key, value2);
+    el.style.setProperty(kebabCase(key), value2);
   });
   setTimeout(() => {
     if (el.style.length === 0) {
@@ -2138,6 +2138,9 @@ function setStylesFromString(el, value) {
   return () => {
     el.setAttribute("style", cache);
   };
+}
+function kebabCase(subject) {
+  return subject.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
 }
 
 // packages/alpinejs/src/utils/once.js
@@ -2568,6 +2571,8 @@ function on(el, event, modifiers, callback) {
   let handler3 = (e) => callback(e);
   let options = {};
   let wrapHandler = (callback2, wrapper) => (e) => wrapper(callback2, e);
+  if (modifiers.includes("dot"))
+    event = dotSyntax(event);
   if (modifiers.includes("camel"))
     event = camelCase2(event);
   if (modifiers.includes("passive"))
@@ -2629,6 +2634,9 @@ function on(el, event, modifiers, callback) {
     listenerTarget.removeEventListener(event, handler3, options);
   };
 }
+function dotSyntax(subject) {
+  return subject.replace(/-/g, ".");
+}
 function camelCase2(subject) {
   return subject.toLowerCase().replace(/-(\w)/g, (match, char) => char.toUpperCase());
 }
@@ -2658,7 +2666,7 @@ function throttle(func, limit) {
 function isNumeric(subject) {
   return !Array.isArray(subject) && !isNaN(subject);
 }
-function kebabCase(subject) {
+function kebabCase2(subject) {
   return subject.replace(/([a-z])([A-Z])/g, "$1-$2").replace(/[_\s]/, "-").toLowerCase();
 }
 function isKeyEvent(event) {
@@ -2695,7 +2703,7 @@ function isListeningForASpecificKeyThatHasntBeenPressed(e, modifiers) {
 function keyToModifiers(key) {
   if (!key)
     return [];
-  key = kebabCase(key);
+  key = kebabCase2(key);
   let modifierToKeyMap = {
     ctrl: "control",
     slash: "/",
@@ -2755,7 +2763,7 @@ function generateAssignmentFunction(el, modifiers, expression) {
   return (event, currentValue) => {
     return mutateDom(() => {
       if (event instanceof CustomEvent && event.detail !== void 0) {
-        return event.detail;
+        return event.detail || event.target.value;
       } else if (el.type === "checkbox") {
         if (Array.isArray(currentValue)) {
           let newValue = modifiers.includes("number") ? safeParseNumber(event.target.value) : event.target.value;
@@ -22568,12 +22576,14 @@ process.umask = function() { return 0; };
 /******/ 			// add "moreModules" to the modules object,
 /******/ 			// then flag all "chunkIds" as loaded and fire callback
 /******/ 			var moduleId, chunkId, i = 0;
-/******/ 			for(moduleId in moreModules) {
-/******/ 				if(__webpack_require__.o(moreModules, moduleId)) {
-/******/ 					__webpack_require__.m[moduleId] = moreModules[moduleId];
+/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
+/******/ 				for(moduleId in moreModules) {
+/******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
+/******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
+/******/ 					}
 /******/ 				}
+/******/ 				if(runtime) var result = runtime(__webpack_require__);
 /******/ 			}
-/******/ 			if(runtime) var result = runtime(__webpack_require__);
 /******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
 /******/ 			for(;i < chunkIds.length; i++) {
 /******/ 				chunkId = chunkIds[i];

@@ -6,11 +6,11 @@
 
                 @role('admin')
                 <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center">
+                {{-- <div class="flex-shrink-0 flex items-center">
                     <a href="{{ route('admin.dashboard') }}">
                         <x-jet-application-mark class="block h-9 w-auto" />
                     </a>
-                </div>
+                </div> --}}
 
                 <!-- Navigation Links For Admin Role -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
@@ -39,11 +39,11 @@
 
                 @else
                 <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center">
+                {{-- <div class="flex-shrink-0 flex items-center">
                     <a href="{{ route('participant.dashboard') }}">
                         <x-jet-application-mark class="block h-9 w-auto" />
                     </a>
-                </div>
+                </div> --}}
 
                 <!-- Navigation Links For Admin Role -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
@@ -133,10 +133,6 @@
                             <div class="block px-4 py-2 text-xs text-gray-400">
                                 {{ __('Manage Account') }}
                             </div>
-
-                            <x-jet-dropdown-link>
-                                {{ Auth::user()->getPermissionNames()->first() }}
-                            </x-jet-dropdown-link>
 
                             <x-jet-dropdown-link href="{{ route('profile.show') }}">
                                 {{ __('Profile') }}

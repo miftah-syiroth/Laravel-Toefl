@@ -36,11 +36,6 @@ class CreateNewUser implements CreatesNewUsers
             'address' => $input['address'],
             'password' => Hash::make($input['password']),
         ]);
-
-        $user->assignRole('participant'); // user akan diberi role participant
-
-        // role particpant dengan permission mendaftar kelas. Hal ini berguna untuk mengatasi peserta mendaftar tanpa membayar
-        $user->givePermissionTo('registrasi kelas'); 
         
         return $user;
     }

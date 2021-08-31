@@ -35,6 +35,7 @@ class User extends Authenticatable
         'certificate',
         'kelas_id',
         'toefl_id',
+        'status_id',
     ];
 
     /**
@@ -81,5 +82,17 @@ class User extends Authenticatable
     public function questions()
     {
         return $this->belongsToMany(Question::class, 'answers', 'user_id', 'question_id')->withPivot('answer', 'score', 'last_minute', 'last_question');
+    }
+
+    // one to one peserta memiliki satu score
+    public function score()
+    {
+        return $this->hasOne(Score::class);
+    }
+
+    // setiap peserta memiliki satu status
+    public function status()
+    {
+        return $this->belongsTo(ParticipantStatus::class, 'status_id');
     }
 }

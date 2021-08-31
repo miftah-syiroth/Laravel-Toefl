@@ -9,7 +9,7 @@ use Livewire\Component;
 class Section1 extends Component
 {
     // 2100
-    public $timer = 2100, $menit, $detik;
+    public $timer = 20, $menit, $detik;
 
     public $toefl;
 

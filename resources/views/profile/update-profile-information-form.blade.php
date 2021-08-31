@@ -64,7 +64,6 @@
             {{-- <x-jet-label for="email" value="{{ __('Email') }}" /> --}}
             <label for="email">{{ __('Email') }}</label>
             <x-jet-input id="email" type="email" class="mt-1 block w-full" wire:model.defer="state.email" />
-            <input type="email" name="email" id="">
             <x-jet-input-error for="email" class="mt-2" />
         </div>
     </x-slot>

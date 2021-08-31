@@ -42,5 +42,9 @@
         @stack('modals')
 
         @livewireScripts
+
+        {{-- library js --}}
+        <script src="https://cdn.ckeditor.com/ckeditor5/29.2.0/classic/ckeditor.js"></script>
+        @stack('scripts')
     </body>
 </html>

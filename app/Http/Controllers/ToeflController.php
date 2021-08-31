@@ -11,14 +11,6 @@ use Illuminate\Support\Facades\Storage;
 
 class ToeflController extends Controller
 {
-    // fungsi ini menampilkan list of toefls untuk dikelola oleh admin
-    public function index()
-    {
-        // ambil semua toefls row yang ada utk ditampilkan pada tabel index
-        $toefls = Toefl::all();
-        return view('admin.toefl.index', compact('toefls'));
-    }
-
     // fungsi untuk membuat toefl baru
     public function create()
     {
@@ -28,19 +20,46 @@ class ToeflController extends Controller
     public function store(Request $request)
     {
         // validasi dulu
-        $validated = $request->validate([
+        $attributes = $request->validate([
             'title' => 'required|unique:toefls|max:255|string',
+            'section_1_direction' => 'required',
+            'section_1_imageable' => 'required|image',
             'section_1_track' => 'required|mimes:mp3',
+            'part_a_direction' => 'required',
+            'part_a_imageable' => 'required|image',
+            'part_a_track' => 'required|mimes:mp3',
+            'part_b_direction' => 'required',
+            'part_b_imageable' => 'required|image',
+            'part_b_track' => 'required|mimes:mp3',
+            'part_c_direction' => 'required',
+            'part_c_imageable' => 'required|image',
+            'part_c_track' => 'required|mimes:mp3',
             'section_2_direction' => 'required',
-            'section_3_direction' => 'required',
+            'section_2_imageable' => 'required|image',
             'structure_direction' => 'required',
+            'structure_imageable' => 'required|image',
             'written_expression_direction' => 'required',
+            'written_expression_imageable' => 'required|image',
+            'section_3_direction' => 'required',
+            'section_3_imageable' => 'required|image',
         ]);
 
-        // simpan track ke dalam directory public dan ganti isi dari section_1_track
-        $path = $validated['section_1_track']->store("toefl/tracks");
-        $validated['section_1_track'] = $path;
+        // simpan audio full section 1 dan ambil pathnya
+        $attributes['section_1_track'] = $attributes['section_1_track']->store("toefl/tracks/listening");
+        $attributes['part_a_track'] = $attributes['part_a_track']->store("toefl/tracks/part-a");
+        $attributes['part_b_track'] = $attributes['part_b_track']->store("toefl/tracks/part-b");
+        $attributes['part_c_track'] = $attributes['part_c_track']->store("toefl/tracks/part-c");
 
+        // simpan gambarnya
+        $attributes['section_1_imageable'] = $attributes['section_1_imageable']->store("toefl/images/section-1");
+        $attributes['part_a_imageable'] = $attributes['part_a_imageable']->store("toefl/images/part-a");
+        $attributes['part_b_imageable'] = $attributes['part_b_imageable']->store("toefl/images/part-b");
+        $attributes['part_c_imageable'] = $attributes['part_c_imageable']->store("toefl/images/part-c");
+        $attributes['section_2_imageable'] = $attributes['section_2_imageable']->store("toefl/images/section-2");
+        $attributes['structure_imageable'] = $attributes['structure_imageable']->store("toefl/images/structure");
+        $attributes['written_expression_imageable'] = $attributes['written_expression_imageable']->store("toefl/images/written-expression");
+        $attributes['section_3_imageable'] = $attributes['section_3_imageable']->store("toefl/images/section-3");
+       
         // tambahkan durasi
         $validated['duration'] = 6900; // in second
         
@@ -111,54 +130,10 @@ class ToeflController extends Controller
         return redirect('/admin/toefls');
     }
 
-    public function examination()
+    public function getLastQuestion()
     {
-        # controller digunakan untuk membatasi akses via url, daripada membatasi di route
-        # cek apakah pekerjaan baru atau sedang mengerjakan, atau sudah selesai
-        # ambil soal terakhir, value null jika pekerjaan baru, retrive a row jika sudah pernah mengerjakan
-        $lastQuestion = Auth::user()->questions()->orderBy('question_id', 'desc')->first();
-
-        if ($lastQuestion) { # jika retrive a row, masih ada kemungkinan lanjut atau sudah selesai
-            # exam selesai, yaitu jika waktu pelaksanaan habis, atau ATAU berada pada section 3 soal ke 50 ATAU section 3 dgn last_minute <=0. SYARAT PERTAMA BELUM DIIMPLEMENTASI
-            if ($lastQuestion->section_id == 3 && ($lastQuestion->pivot->last_question >= 49 || $lastQuestion->pivot->last_minute <= 0)) { 
-                return redirect('/participant/dashboard');
-            } else { # exam belum tuntas tp masih ada kesempatan waktu
-                // cek lg untuk tiap2 section
-                if ($lastQuestion->section_id == 1) { // jika belum selesai di section 1
-                    // cek lg barangkali udh selesai di akhir soal atau kehabisa waktu
-                    if ($lastQuestion->pivot->last_question >= 49 || $lastQuestion->pivot->last_minute <= 0) {
-                        return redirect()->to('/participant/toefls/structure-and-written-expression');
-                    } else {
-                        return redirect()->to('/participant/toefls/listening-comprehension');
-                    }
-                    
-                } elseif ($lastQuestion->section_id == 2) { // section 2
-                    // cek lg barangkali udh di akhir soal atau kehabisan waktu
-                    if ($lastQuestion->pivot->last_question >= 39 || $lastQuestion->pivot->last_minute <= 0) {
-                        return redirect()->to('/participant/toefls/reading-comprehension');
-                    } else { // belum selesai dan masih ada waktu
-                        return redirect()->to('/participant/toefls/structure-and-written-expression');
-                    }
-                } else { // section 3
-                    // cek lg barangkali udh di akhir soal atau kehabisan waktu
-                    // if ($lastQuestion->pivot->last_question >= 49 || $lastQuestion->pivot->last_minute <= 0) {
-                    //     return redirect()->to('/participant/dashboard');
-                    // } else { // belum selesai dan masih ada waktu
-                    //     return redirect()->to('/participant/toefls/reading-comprehension');
-                    // }
-                    return view('participant.toefl-worksheet.section3');
-                }
-            }
-            
-        } else { # jika null, artinya perkejaan baru. start dari section 1
-            return view('participant.toefl-worksheet.section1');
-        }
-        
-    }
-
-    public function examValidation()
-    {
-        $lastQuestion = Auth::user()->questions()->orderBy('question_id', 'desc')->first();
+        return Auth::user()->questions()->orderBy('question_id', 'desc')->first();
+        // $lastQuestion = Auth::user()->questions()->orderBy('question_id', 'desc')->first();
 
     }
 
@@ -168,7 +143,7 @@ class ToeflController extends Controller
         # selesai adalah jika melewati waktu pelaksanaan ATAU berada pada section 3 soal ke 50 ATAU section 3 dgn last_minute <=0. SYARAT PERTAMA BELUM DIIMPLEMENTASI
         # cek jika waktu pengerjaan sudah berakhir
 
-        $lastQuestion = Auth::user()->questions()->orderBy('question_id', 'desc')->first();
+        $lastQuestion = $this->getLastQuestion();
 
         if ($lastQuestion) {
             #cek kalau udah selesai garapnya
@@ -207,7 +182,7 @@ class ToeflController extends Controller
         # cek jika waktu pengerjaan sudah berakhir
 
         #cek perkejaan baru, kembalikan ke pekerjaan semestinya atau sudah selesai
-        $lastQuestion = Auth::user()->questions()->orderBy('question_id', 'desc')->first();
+        $lastQuestion = $this->getLastQuestion();
 
         if ($lastQuestion) {
             #cek kalau udah selesai garapnya
@@ -244,7 +219,7 @@ class ToeflController extends Controller
         # selesai adalah jika melewati waktu pelaksanaan ATAU berada pada section 3 soal ke 50 ATAU section 3 dgn last_minute <=0. SYARAT PERTAMA BELUM DIIMPLEMENTASI
         # cek jika waktu pengerjaan sudah berakhir
         #cek perkejaan baru, kembalikan ke pekerjaan semestinya atau sudah selesai
-        $lastQuestion = Auth::user()->questions()->orderBy('question_id', 'desc')->first();
+        $lastQuestion = $this->getLastQuestion();
 
         if ($lastQuestion) {
             #cek kalau udah selesai garapnya

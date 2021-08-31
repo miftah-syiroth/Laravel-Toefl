@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Actions\Fortify\PasswordValidationRules;
 use App\Models\Kelas;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -16,13 +18,17 @@ class UserController extends Controller
 
     public function participantRegister(Kelas $kelas)
     {
+        #cek kalau kuotanya udah penuh atau waktu pendaftaran sudah habis.details-heading
+        if ($kelas->quota <= $kelas->users->count() || $kelas->pendaftaran < now()) {
+            return redirect()->back()->with('message', 'Kuota penuh atau pendaftaran berakhir');
+        }
+
         return view('guest.register', compact('kelas'));
-        // return view('participant.kelas.register', compact('kelas'));
     }
 
     public function storeParticipantRegister(Request $request, Kelas $kelas)
     {
-        $validated = $request->validate([
+        $attributes = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'phone' => ['required', 'numeric'],
@@ -31,19 +37,28 @@ class UserController extends Controller
             'receipt_of_payment' => ['required', 'image'],
         ]);
 
+        #cek kalau kuotanya udah penuh atau waktu pendaftaran sudah habis.details-heading
+        if ($kelas->quota <= $kelas->users->count() || $kelas->pendaftaran < now()) {
+            return redirect('/')->with('message', 'Kuota penuh atau pendaftaran berakhir');
+        }
+
         // simpan bukti transfer ke dalam directory public dan ganti isi dari receipt of payment
-        $path = $validated['receipt_of_payment']->store("participant/receipt");
-        $validated['receipt_of_payment'] = $path;
+        $path = Storage::disk('local')->put('receipts', $attributes['receipt_of_payment']);
+        $attributes['receipt_of_payment'] = $path;
 
-        $validated['password'] = Hash::make($validated['password']); // bikin password enkripsi
-        // $validated['kelas_id'] = $kelas->id;
+        $attributes['password'] = Hash::make($attributes['password']); // bikin password enkripsi
 
-        $user = $kelas->users()->create($validated);
+        $attributes['status_id'] = 1; //set status peserta sebagai pengajuan pendaftaran
+
+        // ambil random 1 toefl dari kelas. kelas punya bnyk toefl utk keamanan test
+        $attributes['toefl_id'] = Arr::random($kelas->toefls()->pluck('id')->toArray());
+        
+        $user = $kelas->users()->create($attributes);
 
         $user->assignRole('participant'); // user diberi role participant
 
         // peserta yang mendaftar diberi hak akses untuk melihat status pendaftaran
-        $user->syncPermissions('view status');
+        // $user->syncPermissions('view status');
 
         return redirect('/participant/dashboard');
     }

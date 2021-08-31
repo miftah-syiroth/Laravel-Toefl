@@ -9,10 +9,14 @@ class CardList extends Component
 {
     public $kelas;
 
+    public function updateKelas()
+    {
+        $this->kelas = Kelas::withCount('users')->get();
+    }
+
     public function mount()
     {
-        // pusher dipikirin
-        $this->kelas = Kelas::all();
+        $this->kelas = Kelas::withCount('users')->get();
     }
 
     public function render()

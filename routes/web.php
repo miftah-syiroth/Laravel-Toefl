@@ -1,11 +1,12 @@
 <?php
 
 use App\Http\Controllers\KelasController;
-use App\Http\Controllers\PageController;
-use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ToeflController;
 use App\Http\Controllers\UserController;
+use App\Http\Livewire\Participant\ParticipantIndex;
+use App\Http\Livewire\Participant\ShowParticipant;
+use App\Http\Livewire\Toefl\ToeflIndex;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,40 +20,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('guest.home');
-});
-
-// Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-//     return view('dashboard');
-// })->name('dashboard');
-
-// Route::get('/home', [PageController::class, 'home']);
+Route::view('/', 'guest.home');
 
 Route::get('/participant/{kelas}/register', [UserController::class, 'participantRegister']);
 Route::post('/participant/{kelas}', [UserController::class, 'storeParticipantRegister']);
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
-    Route::prefix('/participant')->group(function () {
+    Route::prefix('/participant')->middleware(['role:participant'])->group(function () {
 
-        Route::get('/dashboard', function () {
-            return view('participant.dashboard');
-        })->name('participant.dashboard');
+        Route::view('/dashboard', 'participant.dashboard')->name('participant.dashboard');
 
-        Route::get('/toefls/listening-comprehension', [ToeflController::class, 'section1Exam']);
-        Route::get('/toefls/structure-and-written-expression', [ToeflController::class, 'section2Exam']);
-        Route::get('/toefls/reading-comprehension', [ToeflController::class, 'section3Exam']);
+        Route::group(['middleware' => ['permission:do toefl']], function () {
+            Route::get('/toefls/listening-comprehension', [ToeflController::class, 'section1Exam']);
+            Route::get('/toefls/structure-and-written-expression', [ToeflController::class, 'section2Exam']);
+            Route::get('/toefls/reading-comprehension', [ToeflController::class, 'section3Exam']);
+        });
     });
     
     Route::prefix('/admin')->middleware(['role:admin'])->group(function () {
 
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('admin.dashboard');
+        Route::view('/dashboard', 'admin.dashboard')->name('admin.dashboard');
 
         // routing toefls
-        Route::get('/toefls', [ToeflController::class, 'index'])->name('toefls.index');
+        Route::get('/toefls', ToeflIndex::class)->name('toefls.index');
         Route::get('/toefls/create', [ToeflController::class, 'create'])->name('toefls.create');
         Route::post('/toefls', [ToeflController::class, 'store'])->name('toefls.store');
         Route::get('toefls/{toefl}', [ToeflController::class, 'show'])->name('toefls.show');
@@ -72,7 +63,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::put('/kelas/{kelas}', [KelasController::class, 'update'])->name('kelas.update');
         Route::delete('/kelas/{kelas}', [KelasController::class, 'destroy'])->name('kelas.destroy');
 
-        Route::get('/participants',[ParticipantController::class, 'index'])->name('participants.index');
+        Route::get('/participants', ParticipantIndex::class)->name('participants.index');
+        Route::get('/participants/{participant}', ShowParticipant::class)->name('participant.show');
     });
 
 });

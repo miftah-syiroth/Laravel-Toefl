@@ -21,13 +21,15 @@ class Kelas extends Model
     // mutator untuk merubah format tanggal pelaksanaan supaya dapat tampil di input datetime-local
     public function getPelaksanaanAttribute($value)
     {
-        return Carbon::parse($this->attributes['pelaksanaan'])->isoFormat('YYYY-MM-DDThh:mm:ss');
+        // return Carbon::parse($this->attributes['pelaksanaan'])->isoFormat('YYYY-MM-DDThh:mm:ss');
+        return Carbon::parse($this->attributes['pelaksanaan']);
     }
 
     // mutator untuk merubah format tanggal pendaftaran supaya dapat tampil di input datetime-local
     public function getPendaftaranAttribute($value)
     {
-        return Carbon::parse($this->attributes['pendaftaran'])->isoFormat('YYYY-MM-DDThh:mm:ss');
+        // return Carbon::parse($this->attributes['pendaftaran'])->isoFormat('YYYY-MM-DDThh:mm:ss');
+        return Carbon::parse($this->attributes['pendaftaran']);
     }
 
     // banyak kelas toefl memilki banyak status

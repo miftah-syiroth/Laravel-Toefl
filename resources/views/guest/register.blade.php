@@ -9,6 +9,10 @@
         <form method="POST" action="/participant/{{ $kelas->id }}" enctype="multipart/form-data">
             @csrf
 
+            <div class="py-5">
+                <h3 class="text-center font-semibold">Pendaftaran {{ $kelas->nama }}</h3>
+            </div>
+
             <div>
                 <x-jet-label for="name" value="{{ __('Name') }}" />
                 <x-jet-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
