@@ -5,37 +5,34 @@ namespace App\Http\Controllers;
 use App\Models\Kelas;
 use App\Models\Status;
 use App\Models\Toefl;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
 class KelasController extends Controller
 {
-    public function index()
-    {
-        $kelas = Kelas::all();
-        return view('admin.kelas.index', compact('kelas'));
-    }
-
     public function create()
     {
-        $toefls = Toefl::all();
+        // ambil toefl hanya yg lengkap jumlah soalnya yaitu 140
+        $toefls = Toefl::withCount('questions')->having('questions_count', 140)->get();
         return view('admin.kelas.create', compact('toefls'));
     }
 
     public function store(Request $request)
     {
         // validasi dulu
-        $validated = $request->validate([
+        $attributes = $request->validate([
             'nama' => 'required|unique:kelas|max:255|string',
             'pelaksanaan' => 'required|date|after:pendaftaran',
             'pendaftaran' => 'required|date|before:pelaksanaan|after:tomorrow',
             'quota' => 'required',
             'toefls' => 'required|array',
+            'price' => 'required|integer',
         ]);
 
-        $kelas = Kelas::create($validated);
+        $attributes['ispublished'] = false;
 
-        $kelas->statuses()->attach([2, 3]); // buat status unpublish id=2 dan archived id=3
+        $kelas = Kelas::create($attributes);
 
         $kelas->toefls()->attach($request['toefls']); // simpan toefl-toefl yang akan digunakan
 

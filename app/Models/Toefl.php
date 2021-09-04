@@ -50,7 +50,7 @@ class Toefl extends Model
     }
 
     // banyak toefl dimiliki oleh banyak kelas
-    public function classes()
+    public function kelas()
     {
         return $this->belongsToMany(Kelas::class, 'kelas_has_toefls', 'toefl_id', 'kelas_id');
     }

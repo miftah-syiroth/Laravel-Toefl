@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Question;
 use App\Models\Section;
 use App\Models\Toefl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
 class ToeflController extends Controller
@@ -61,10 +64,10 @@ class ToeflController extends Controller
         $attributes['section_3_imageable'] = $attributes['section_3_imageable']->store("toefl/images/section-3");
        
         // tambahkan durasi
-        $validated['duration'] = 6900; // in second
+        $attributes['duration'] = 6900; // in second
         
         // simpan semua input ke dalam database
-        Toefl::create($validated);
+        Toefl::create($attributes);
 
         // redirect ke index toefls
         return redirect('/admin/toefls');
@@ -73,14 +76,41 @@ class ToeflController extends Controller
     // fungsi untuk melihat detil toefl
     public function show(Toefl $toefl)
     {
-        $sections = Section::with(['subSections'])->get();
-
-        $total_question = 0;
-        foreach ($sections as $key => $section) {
-            $total_question += $section->total_question;
-        }
+        $sections = Section::with(['subSections'])->withCount(['subSections'])->get();
+       
+        $toefl = Toefl::with('kelas')->withCount([
+            'questions', #toal soal yg telah dibuat
+            'questions as section_1_count' => function (Builder $query) {
+                $query->where('section_id', 1);
+            },
+            'questions as section_2_count' => function (Builder $query) {
+                $query->where('section_id', 2);
+            },
+            'questions as section_3_count' => function (Builder $query) {
+                $query->where('section_id', 3);
+            },
+            'questions as part_a_count' => function (Builder $query) {
+                $query->where('sub_section_id', 3);
+            },
+            'questions as part_b_count' => function (Builder $query) {
+                $query->where('sub_section_id', 4);
+            },
+            'questions as part_c_count' => function (Builder $query) {
+                $query->where('sub_section_id', 5);
+            },
+            'questions as structure_count' => function (Builder $query) {
+                $query->where('sub_section_id', 1);
+            },
+            'questions as written_expression_count' => function (Builder $query) {
+                $query->where('sub_section_id', 2);
+            },
+            'kelas',
+            'users' => function (Builder $query) {
+                $query->where('status_id', 5);
+            },
+        ])->find($toefl->id);
         
-        return view('admin.toefl.show', compact("toefl", "sections", "total_question"));
+        return view('admin.toefl.show', compact("toefl"));
     }
 
     // fungsi edit toefl
@@ -93,34 +123,111 @@ class ToeflController extends Controller
     public function update(Request $request, Toefl $toefl)
     {
         // validasi
-        $validated = $request->validate([
+        $attributes = $request->validate([
             'title' => 'required|max:255|string',
+            'section_1_direction' => 'required',
+            'section_1_imageable' => 'image',
             'section_1_track' => 'mimes:mp3',
+            'part_a_direction' => 'required',
+            'part_a_imageable' => 'image',
+            'part_a_track' => 'mimes:mp3',
+            'part_b_direction' => 'required',
+            'part_b_imageable' => 'image',
+            'part_b_track' => 'mimes:mp3',
+            'part_c_direction' => 'required',
+            'part_c_imageable' => 'image',
+            'part_c_track' => 'mimes:mp3',
             'section_2_direction' => 'required',
-            'section_3_direction' => 'required',
+            'section_2_imageable' => 'image',
             'structure_direction' => 'required',
+            'structure_imageable' => 'image',
             'written_expression_direction' => 'required',
+            'written_expression_imageable' => 'image',
+            'section_3_direction' => 'required',
+            'section_3_imageable' => 'image',
         ]);
 
-        // cek apa ada perubahan pada input track audio listening
-        if (Arr::exists($validated, 'section_1_track')) { //kalau ada input audio baru
-            Storage::delete($toefl->section_1_track); // hapus track lama toefl dari storage
-            
-            $path = $validated['section_1_track']->store("toefl/tracks"); // simpan track baru dan ambil path
-            
-            $validated['section_1_track'] = $path; // masukkan ke key section_1_track
-        }
+        $attributes = $this->checkUploadedFile($attributes, $toefl);
 
         // update toefl dgn array validated
-        $toefl->update($validated);
+        $toefl->update($attributes);
 
         return redirect('/admin/toefls');
+    }
+
+    public function checkUploadedFile($attributes, Toefl $toefl)
+    {
+        // simpan audio full section 1 dan ambil pathnya
+
+        if (isset($attributes['section_1_track'])) { // cek ada input audio ssection 1, jik true
+            Storage::delete($toefl->section_1_track); // hapus track lama toefl dari storage
+            $attributes['section_1_track'] = $attributes['section_1_track']->store("toefl/tracks/listening");
+        }
+
+        if (isset($attributes['part_a_track'])) { // cek ada input audio ssection 1, jik true
+            Storage::delete($toefl->part_a_track); // hapus track lama toefl dari storage
+            $attributes['part_a_track'] = $attributes['part_a_track']->store("toefl/tracks/part-a");
+        }
+
+        if (isset($attributes['part_b_track'])) { // cek ada input audio ssection 1, jik true
+            Storage::delete($toefl->part_b_track); // hapus track lama toefl dari storage
+            $attributes['part_b_track'] = $attributes['part_b_track']->store("toefl/tracks/part-b");
+        }
         
+        if (isset($attributes['part_c_track'])) { // cek ada input audio ssection 1, jik true
+            Storage::delete($toefl->part_c_track); // hapus track lama toefl dari storage
+            $attributes['part_c_track'] = $attributes['part_c_track']->store("toefl/tracks/part-c");
+        }
+        
+        // simpan gambarnya
+        if (isset($attributes['section_1_imageable'])) { // cek ada input audio ssection 1, jik true
+            Storage::delete($toefl->section_1_imageable); // hapus track lama toefl dari storage
+            $attributes['section_1_imageable'] = $attributes['section_1_imageable']->store("toefl/images/section-1");
+        }
+        
+        if (isset($attributes['part_a_imageable'])) { // cek ada input audio ssection 1, jik true
+            Storage::delete($toefl->part_a_imageable); // hapus track lama toefl dari storage
+            $attributes['part_a_imageable'] = $attributes['part_a_imageable']->store("toefl/images/part-a");
+        }
+        
+        if (isset($attributes['part_b_imageable'])) { // cek ada input audio ssection 1, jik true
+            Storage::delete($toefl->part_b_imageable); // hapus track lama toefl dari storage
+            $attributes['part_b_imageable'] = $attributes['part_b_imageable']->store("toefl/images/part-b");
+        }
+        
+        if (isset($attributes['part_c_imageable'])) { // cek ada input audio ssection 1, jik true
+            Storage::delete($toefl->part_c_imageable); // hapus track lama toefl dari storage
+            $attributes['part_c_imageable'] = $attributes['part_c_imageable']->store("toefl/images/part-c");
+        }
+        
+        if (isset($attributes['section_2_imageable'])) { // cek ada input audio ssection 1, jik true
+            Storage::delete($toefl->section_2_imageable); // hapus track lama toefl dari storage
+            $attributes['section_2_imageable'] = $attributes['section_2_imageable']->store("toefl/images/section-2");
+        }
+        
+        if (isset($attributes['structure_imageable'])) { // cek ada input audio ssection 1, jik true
+            Storage::delete($toefl->structure_imageable); // hapus track lama toefl dari storage
+            $attributes['structure_imageable'] = $attributes['structure_imageable']->storeAs("toefl/images/structure");
+        }
+        
+        if (isset($attributes['written_expression_imageable'])) {
+            Storage::delete($toefl->written_expression_imageable); // hapus track lama toefl dari storage
+            $attributes['written_expression_imageable'] = $attributes['written_expression_imageable']->store("toefl/images/written-expression");
+        }
+
+        if (isset($attributes['section_3_imageable'])) { // cek ada input audio ssection 1, jik true
+            Storage::delete($toefl->section_3_imageable); // hapus track lama toefl dari storage
+
+            $attributes['section_3_imageable'] = $attributes['section_3_imageable']->store("toefl/images/section-3");
+        }
+        
+        return $attributes;
     }
 
     public function destroy(Toefl $toefl)
     {
-        Storage::delete($toefl->section_1_track); // hapus track lama toefl dari storage
+        // hapus semua file yg berkaitan :v
+        $this->deleteFileUploaded($toefl);
 
         // hapus questionny
         $toefl->questions()->delete();
@@ -130,11 +237,27 @@ class ToeflController extends Controller
         return redirect('/admin/toefls');
     }
 
+    public function deleteFileUploaded($toefl)
+    {
+        Storage::delete($toefl->section_1_track); // hapus track lama toefl dari storage
+        Storage::delete($toefl->part_a_track);
+        Storage::delete($toefl->part_b_track);
+        Storage::delete($toefl->part_c_track);
+
+        Storage::delete($toefl->section_1_imageable);
+        Storage::delete($toefl->part_a_imageable);
+        Storage::delete($toefl->part_b_imageable); 
+        Storage::delete($toefl->part_c_imageable);
+        Storage::delete($toefl->section_2_imageable); 
+        Storage::delete($toefl->structure_imageable);
+        Storage::delete($toefl->written_expression_imageable);
+        Storage::delete($toefl->section_3_imageable);
+    }
+
     public function getLastQuestion()
     {
         return Auth::user()->questions()->orderBy('question_id', 'desc')->first();
         // $lastQuestion = Auth::user()->questions()->orderBy('question_id', 'desc')->first();
-
     }
 
     public function section1Exam()

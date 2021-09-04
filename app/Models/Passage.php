@@ -13,6 +13,7 @@ class Passage extends Model
     protected $fillable = [
         'passage',
         'toefl_id',
+        'imageable', #buat nampung gambar passage
     ];
 
     // banyak passage terhubung pada satu toefl

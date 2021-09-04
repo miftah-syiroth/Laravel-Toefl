@@ -81,12 +81,11 @@
                                                 </span>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <a href="#" class="text-indigo-600 hover:text-indigo-900">Detil</a>
+                                                <a href="/admin/toefls/{{ $toefl->id }}/edit" class="text-green-800 hover:text-green-900 px-2">Edit</a>
+                                                <a href="/admin/toefls/{{ $toefl->id }}" class="text-indigo-600 hover:text-indigo-900 px-2">Detil</a>
                                             </td>
                                         </tr>
                                         @endforeach
-                        
-                                    <!-- More people... -->
                                     </tbody>
                                 </table>
                             </div>

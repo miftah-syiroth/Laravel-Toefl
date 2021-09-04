@@ -13,6 +13,7 @@ class SubSection extends Model
     protected $fillable = [
         'name',
         'section_id',
+        'total_question',
     ];
 
     // sebuah sub section memiliki satu parent section

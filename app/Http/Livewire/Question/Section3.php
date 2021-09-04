@@ -100,8 +100,10 @@ class Section3 extends Component
     // action dari navigasi passage
     public function switchPassage(Passage $passage)
     {
-        $this->passage = $passage->passage; // form input passage diisi dengan value model
+        // $this->passage = $passage->passage; // form input passage diisi dengan value model
         $this->passageSelected = $passage;
+
+        $this->reset(['passage', 'option_a', 'option_b', 'option_c', 'option_d', 'key_answer', 'question', 'questions', 'questionSelected']);
 
         $this->questions = $passage->questions()->get();
     }

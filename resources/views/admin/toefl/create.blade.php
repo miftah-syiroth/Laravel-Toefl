@@ -88,7 +88,7 @@
                                                 <div class="text-red-600 font-weight-bold text-sm">{{ $message }}</div>
                                             @enderror
                                             <div class="mt-1">
-                                                <textarea id="section_1_direction" name="section_1_direction" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"></textarea>
+                                                <textarea id="section_1_direction" name="section_1_direction" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md">{{ old('section_1_direction') }}</textarea>
                                             </div>
                                             
                                         </div>
@@ -101,7 +101,7 @@
                                                 <div class="text-red-600 font-weight-bold text-sm">{{ $message }}</div>
                                             @enderror
                                             <div class="mt-1">
-                                                <textarea id="part_a_direction" name="part_a_direction" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"></textarea>
+                                                <textarea id="part_a_direction" name="part_a_direction" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md">{{ old('part_a_direction') }}</textarea>
                                             </div>
                                             
                                         </div>
@@ -114,7 +114,7 @@
                                                 <div class="text-red-600 font-weight-bold text-sm">{{ $message }}</div>
                                             @enderror
                                             <div class="mt-1">
-                                                <textarea id="part_b_direction" name="part_b_direction" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"></textarea>
+                                                <textarea id="part_b_direction" name="part_b_direction" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md">{{ old('part_b_direction') }}</textarea>
                                             </div>
                                             
                                         </div>
@@ -127,7 +127,20 @@
                                                 <div class="text-red-600 font-weight-bold text-sm">{{ $message }}</div>
                                             @enderror
                                             <div class="mt-1">
-                                                <textarea id="part_c_direction" name="part_c_direction" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"></textarea>
+                                                <textarea id="part_c_direction" name="part_c_direction" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md">{{ old('part_c_direction') }}</textarea>
+                                            </div>
+                                            
+                                        </div>
+
+                                        <div class="py-2">
+                                            <label for="section_1_imageable" class="block font-medium text-gray-700">
+                                                Gambar Petunjuk Section 1
+                                            </label>
+                                            @error('section_1_imageable')
+                                                <div class="text-red-600 font-weight-bold text-sm">{{ $message }}</div>
+                                            @enderror
+                                            <div class="mt-1">
+                                                <input type="file" name="section_1_imageable" id="section_1_imageable" class="form-input mt-1 block w-full" placeholder="Jane Doe">
                                             </div>
                                             
                                         </div>
@@ -186,7 +199,7 @@
                                                 <div class="text-red-600 font-weight-bold text-sm">{{ $message }}</div>
                                             @enderror
                                             <div class="mt-1">
-                                                <textarea id="section_2_direction" name="section_2_direction" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"></textarea>
+                                                <textarea id="section_2_direction" name="section_2_direction" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md">{{ old('section_2_direction') }}</textarea>
                                             </div>
                                             
                                         </div>
@@ -199,7 +212,7 @@
                                                 <div class="text-red-600 font-weight-bold text-sm">{{ $message }}</div>
                                             @enderror
                                             <div class="mt-1">
-                                                <textarea id="structure_direction" name="structure_direction" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"></textarea>
+                                                <textarea id="structure_direction" name="structure_direction" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md">{{ old('structure_direction') }}</textarea>
                                             </div>
                                             
                                         </div>
@@ -212,7 +225,7 @@
                                                 <div class="text-red-600 font-weight-bold text-sm">{{ $message }}</div>
                                             @enderror
                                             <div class="mt-1">
-                                                <textarea id="written_expression_direction" name="written_expression_direction" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"></textarea>
+                                                <textarea id="written_expression_direction" name="written_expression_direction" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md">{{ old('written_expression_direction') }}</textarea>
                                             </div>
                                             
                                         </div>
@@ -270,7 +283,7 @@
                                                 <div class="text-red-600 font-weight-bold text-sm">{{ $message }}</div>
                                             @enderror
                                             <div class="mt-1">
-                                                <textarea id="section_3_direction" name="section_3_direction" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"></textarea>
+                                                <textarea id="section_3_direction" name="section_3_direction" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md">{{ old('section_3_direction') }}</textarea>
                                             </div>
                                             
                                         </div>

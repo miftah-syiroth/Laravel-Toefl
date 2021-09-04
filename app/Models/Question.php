@@ -21,6 +21,7 @@ class Question extends Model
         'option_c',
         'option_d',
         'key_answer',
+        'written_expression_imageable', #buat nampung gambar soal
     ];
 
     // banyak soal, yakni pada section 3, mengacu pada satu passage

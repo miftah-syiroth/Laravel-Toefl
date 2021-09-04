@@ -51,6 +51,7 @@ class UserController extends Controller
         $attributes['status_id'] = 1; //set status peserta sebagai pengajuan pendaftaran
 
         // ambil random 1 toefl dari kelas. kelas punya bnyk toefl utk keamanan test
+        // ini mestinya ketika diverifikasi saja
         $attributes['toefl_id'] = Arr::random($kelas->toefls()->pluck('id')->toArray());
         
         $user = $kelas->users()->create($attributes);

@@ -22,8 +22,8 @@ class PassageFactory extends Factory
     public function definition()
     {
         return [
-            'toefl_id' => 4,
-            'passage' => $this->faker->text(1000),
+            'toefl_id' => 5,
+            'imageable' => 'toefl/images/passages/uN8RBIfuykhOhjZeSpuTXyyXp2ECUThWsLf7tdPP.png',
         ];
     }
 }

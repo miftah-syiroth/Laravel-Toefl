@@ -15,7 +15,10 @@ class Kelas extends Model
         'nama',
         'pelaksanaan',
         'pendaftaran',
-        'quota'
+        'quota',
+        'prince',
+        'ispublished',
+        'register_status_id',
     ];
 
     // mutator untuk merubah format tanggal pelaksanaan supaya dapat tampil di input datetime-local
@@ -32,20 +35,20 @@ class Kelas extends Model
         return Carbon::parse($this->attributes['pendaftaran']);
     }
 
-    // banyak kelas toefl memilki banyak status
-    public function statuses()
-    {
-        return $this->belongsToMany(Status::class, 'kelas_has_statuses', 'kelas_id', 'status_id');
-    }
-
     // sebuah kelas bisa memiliki banyak toefl, dan toefl jg dimiliki oleh banyak kelas
     public function toefls()
     {
         return $this->belongsToMany(Toefl::class, 'kelas_has_toefls', 'kelas_id', 'toefl_id');
     }
 
+    // peserta mksdnya
     public function users()
     {
         return $this->hasMany(User::class, 'kelas_id');
+    }
+
+    public function registerStatus()
+    {
+        return $this->belongsTo(RegisterStatus::class, 'register_status_id');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateKelasHasStatusesTable extends Migration
+class AddWrittenExpressionImageableToQuestionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class CreateKelasHasStatusesTable extends Migration
      */
     public function up()
     {
-        Schema::create('kelas_has_statuses', function (Blueprint $table) {
-            $table->foreignId('kelas_id')->constrained('kelas');
-            $table->foreignId('status_id')->constrained('statuses');
+        Schema::table('questions', function (Blueprint $table) {
+            // $table->string('written_expression_imageable')->nullable(); dikomntari biar ga error abis rollback
         });
     }
 
@@ -26,6 +25,8 @@ class CreateKelasHasStatusesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kelas_has_statuses');
+        Schema::table('questions', function (Blueprint $table) {
+            //
+        });
     }
 }

@@ -11,7 +11,7 @@ class ToeflIndex extends Component
 
     public function mount()
     {
-        $this->toefls = Toefl::with(['classes'])->withCount(['questions', 'classes', 'users'])->get();
+        $this->toefls = Toefl::with(['kelas'])->withCount(['questions', 'kelas', 'users'])->get();
     }
 
     public function render()

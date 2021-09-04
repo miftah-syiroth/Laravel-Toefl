@@ -1,11 +1,14 @@
 <?php
 
 use App\Http\Controllers\KelasController;
-use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ToeflController;
 use App\Http\Controllers\UserController;
+use App\Http\Livewire\Kelas\KelasIndex;
 use App\Http\Livewire\Participant\ParticipantIndex;
 use App\Http\Livewire\Participant\ShowParticipant;
+use App\Http\Livewire\Question\CreateSection1;
+use App\Http\Livewire\Question\CreateSection2;
+use App\Http\Livewire\Question\CreateSection3;
 use App\Http\Livewire\Toefl\ToeflIndex;
 use Illuminate\Support\Facades\Route;
 
@@ -43,7 +46,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::view('/dashboard', 'admin.dashboard')->name('admin.dashboard');
 
         // routing toefls
-        Route::get('/toefls', ToeflIndex::class)->name('toefls.index');
+        Route::get('/toefls', ToeflIndex::class)->name('toefls.index'); // pakai livewire single page
         Route::get('/toefls/create', [ToeflController::class, 'create'])->name('toefls.create');
         Route::post('/toefls', [ToeflController::class, 'store'])->name('toefls.store');
         Route::get('toefls/{toefl}', [ToeflController::class, 'show'])->name('toefls.show');
@@ -52,10 +55,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::delete('/toefls/{toefl}', [ToeflController::class, 'destroy'])->name('toefls.destroy');
     
         // routing mengelola suatu toefl question
-        Route::get('/toefls/{toefl}/sections/{section}/questions/create', [QuestionController::class, 'create']);
-    
+        // Route::get('/toefls/{toefl}/sections/{section}/questions/create', [QuestionController::class, 'create']);
+        Route::get('/toefls/{toefl}/sections/1/questions/create', CreateSection1::class); //utk sections 1
+        Route::get('/toefls/{toefl}/sections/2/questions/create', CreateSection2::class); //utk sections 2
+        Route::get('/toefls/{toefl}/sections/3/questions/create', CreateSection3::class); //utk sections 3
+        
         // routing untuk kelola kelas
-        Route::get('/kelas', [KelasController::class, 'index'])->name('kelas.index');
+        Route::get('/kelas', KelasIndex::class)->name('kelas.index');
         Route::get('/kelas/create', [KelasController::class, 'create'])->name('kelas.create');
         Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store');
         Route::get('/kelas/{kelas}', [KelasController::class, 'show'])->name('kelas.show');
