@@ -42,6 +42,13 @@
                                     @enderror
                                 </label>
                                 <label class="block">
+                                    <span class="text-gray-700">Batas Waktu Selesai Pelaksanaan</span>
+                                    <input value="{{ old('akhir_pelaksanaan') }}" type="datetime-local" name="akhir_pelaksanaan" id="akhir_pelaksanaan" class="@error('akhir_pelaksanaan') is-invalid @enderror form-input mt-1 block w-full">
+                                    @error('akhir_pelaksanaan')
+                                    <div class="text-red-600 font-weight-bold">{{ $message }}</div>
+                                    @enderror
+                                </label>
+                                <label class="block">
                                     <span class="text-gray-700">Batas Pendaftaran</span>
                                     <input value="{{ old('pendaftaran') }}" type="datetime-local" name="pendaftaran" id="pendaftaran" class="@error('pendaftaran') is-invalid @enderror form-input mt-1 block w-full">
                                     @error('pendaftaran')

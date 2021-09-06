@@ -4,10 +4,10 @@
     </div>
     
     
-    <div wire:poll="updateKelas" class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-3 gap-4">
         {{-- komponen card kelas --}}
         @foreach ($kelas as $key => $kelas)
-        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+        <div wire:poll="checkRegistrationTime({{ $kelas->id }})" class="bg-white shadow overflow-hidden sm:rounded-lg">
             <div class="px-4 py-5 sm:px-6">
                 <h3 class="text-lg leading-6 font-medium text-gray-900 text-center">
                     {{ $kelas->nama }}
@@ -22,7 +22,7 @@
                         <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <p>{{ $kelas->users_count }} / {{ $kelas->quota }}</p>
 
-                            @if ($kelas->quota - $kelas->users_count <= 0)
+                            @if ($kelas->quota <= $kelas->users_count)
                                 <p class="text-red-600"> kuota habis! </p>
                             @else
                                 <p>
@@ -62,8 +62,8 @@
                     <div class="bg-gray-50 px-4 py-5 sm:px-6">
                         <dt class="text-sm font-medium text-gray-500">
                             {{-- kalau kuota penuh atau batas pendaftaran selesai --}}
-                            @if ($kelas->users_count >= $kelas->quota || $kelas->pendaftaran < now())
-                                kelas penuh atau waktu pendaftaran berakhir
+                            @if ($kelas->register_status_id == 2 || $kelas->register_status_id == 3)
+                                {{ $kelas->registerStatus->status }}
                             @else
                             <a href="/participant/{{ $kelas->id }}/register" class="bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg py-1 px-2">
                                 Daftar

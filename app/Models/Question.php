@@ -48,7 +48,7 @@ class Question extends Model
         return $this->belongsTo(Toefl::class);
     }
 
-    // many to many
+    // many to many dgn pivot answers
     public function users()
     {
         return $this->belongsToMany(User::class, 'answers', 'question_id', 'user_id')->withPivot('answer', 'score', 'last_minute', 'last_question');

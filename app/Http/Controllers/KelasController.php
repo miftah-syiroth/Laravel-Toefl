@@ -24,6 +24,7 @@ class KelasController extends Controller
         $attributes = $request->validate([
             'nama' => 'required|unique:kelas|max:255|string',
             'pelaksanaan' => 'required|date|after:pendaftaran',
+            'akhir_pelaksanaan' => 'required|date|after:pelaksanaan',
             'pendaftaran' => 'required|date|before:pelaksanaan|after:tomorrow',
             'quota' => 'required',
             'toefls' => 'required|array',
@@ -39,15 +40,9 @@ class KelasController extends Controller
         return redirect('/admin/kelas');
     }
 
-    function show(Kelas $kelas)
-    {
-        $statuses = Status::all();
-        return view('admin.kelas.show', compact('kelas', 'statuses'));
-    }
-
     public function edit(Kelas $kelas)
     {
-        $toefls = Toefl::all();
+        $toefls = Toefl::withCount('questions')->having('questions_count', 140)->get();
         return view('admin.kelas.edit', compact('kelas', 'toefls'));
     }
 
@@ -57,10 +52,13 @@ class KelasController extends Controller
         $validated = $request->validate([
             'nama' => 'required|max:255|string',
             'pelaksanaan' => 'required|date|after:pendaftaran',
+            'akhir_pelaksanaan' => 'required|date|after:pelaksanaan',
             'pendaftaran' => 'required|date|before:pelaksanaan|after:tomorrow',
-            'quota' => 'required',
+            'quota' => 'required|integer',
             'toefls' => 'array',
+            'price' => 'required|integer',
         ]);
+
         $kelas->update($validated);
 
         // cek apa ada perubahan pada toefls yg dipilih
@@ -68,7 +66,7 @@ class KelasController extends Controller
             $kelas->toefls()->sync($validated['toefls']); //sinkronisasi kelas,
         }
         
-        return redirect('/admin/kelas');
+        return redirect('/admin/kelas/' . $kelas->id);
     }
     
     public function destroy(Kelas $kelas)

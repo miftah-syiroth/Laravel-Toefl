@@ -19,7 +19,7 @@ class UserController extends Controller
     public function participantRegister(Kelas $kelas)
     {
         #cek kalau kuotanya udah penuh atau waktu pendaftaran sudah habis.details-heading
-        if ($kelas->quota <= $kelas->users->count() || $kelas->pendaftaran < now()) {
+        if ($kelas->register_status_id == 2 || $kelas->register_status_id == 3) {
             return redirect()->back()->with('message', 'Kuota penuh atau pendaftaran berakhir');
         }
 
@@ -38,13 +38,12 @@ class UserController extends Controller
         ]);
 
         #cek kalau kuotanya udah penuh atau waktu pendaftaran sudah habis.details-heading
-        if ($kelas->quota <= $kelas->users->count() || $kelas->pendaftaran < now()) {
+        if ($kelas->register_status_id == 2) {
             return redirect('/')->with('message', 'Kuota penuh atau pendaftaran berakhir');
         }
 
         // simpan bukti transfer ke dalam directory public dan ganti isi dari receipt of payment
-        $path = Storage::disk('local')->put('receipts', $attributes['receipt_of_payment']);
-        $attributes['receipt_of_payment'] = $path;
+        $attributes['receipt_of_payment'] = $attributes['receipt_of_payment']->store("participant/receipts");
 
         $attributes['password'] = Hash::make($attributes['password']); // bikin password enkripsi
 
@@ -60,6 +59,12 @@ class UserController extends Controller
 
         // peserta yang mendaftar diberi hak akses untuk melihat status pendaftaran
         // $user->syncPermissions('view status');
+        // cek jika kuota kelas sudah penuh, maka ganti statusnya biar ga ada yg daftar
+        if ($kelas->users->count() >= $kelas->quota) {
+            $kelas->update([
+                'register_status_id' => 2,
+            ]);
+        }
 
         return redirect('/participant/dashboard');
     }

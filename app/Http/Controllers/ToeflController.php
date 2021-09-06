@@ -229,6 +229,8 @@ class ToeflController extends Controller
         // hapus semua file yg berkaitan :v
         $this->deleteFileUploaded($toefl);
 
+        $toefl->questions()->users()->detach();
+
         // hapus questionny
         $toefl->questions()->delete();
 

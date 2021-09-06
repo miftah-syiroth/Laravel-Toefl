@@ -1,46 +1,72 @@
 <div>
-    <div wire:poll.visible="countdown">
-        waktu anda tersisa {{ $menit }} menit {{ $detik }} detik
-    </div>
-    
-    <div> 
-        <audio controls autoplay src="{{ asset('/storage/'. $toefl->section_1_track) }}">
-            Your browser does not support the audio element.
-            <code>audio</code> element.
-        </audio>
-    </div>
+    <div class="flex py-2 px-2">
+        <div class="border rounded-xl py-2 px-6 w-full mr-2">
+            {{-- ini untuk menampilkan direction --}}
+            <img src="{{ asset('/storage/' . $direction) }}" alt="gambar passage" class="shadow-xl my-4">
 
-    <div class="mt-6"><h1>Soal Nomor {{ $index+1 }} / {{ count($arrayOfQuestions) }}</h1></div>
-    <div class="flex flex-row mt-3">
-        <div>
-            <ul>
-                <li>A. {{ $question->option_a }}</li>
-                <li>B. {{ $question->option_b }}</li>
-                <li>C. {{ $question->option_c }}</li>
-                <li>D. {{ $question->option_d }}</li>
-            </ul>
         </div>
-        <div class="ml-6">
-            <form wire:submit.prevent="saveAnswer" class="flex flex-row">
-                <div>
-                    @php
-                    $val = 1
-                    @endphp
-                    @for ($i = 'A'; $i < 'E'; $i++)
+
+        <div class="border rounded-xl py-2 px-2 max-w-3/4 w-3/4 ml-2">
+            <div class="flex flex-col">
+                <div wire:poll.visible="countdown" class="mb-4">
+                    <p class="text-right font-semibold">waktu anda tersisa {{ $menit }} menit {{ $detik }} detik</p>
+                </div>
+                <div> 
+                    <audio hidden controls autoplay src="{{ asset('/storage/'. $toefl->section_1_track) }}">
+                        Your browser does not support the audio element.
+                        <code>audio</code> element.
+                    </audio>
+                </div>
+
+                <div class="border rounded-xl py-2 px-6 w-full mr-2">
+                    <div class="mt-4 max-w-md">
                         <div>
-                            <input type="radio" wire:model="answer" value="{{ $val }}" required>
-                            <label for="html">{{ $i }}</label><br>
+                            <p class="text-right">No. {{ $index+1 }} / 50</p>
                         </div>
-                    @php
-                        $val++
-                    @endphp
-                    @endfor
+                        <div class="grid grid-cols-1 gap-6">
+                            <form wire:submit.prevent="saveAnswer">
+                                <div class="block mt-2">
+                                    <span class="text-gray-700">Listen Audio and Select The Best Answer Below</span>
+                                    @error('answer')
+                                        <div class="text-red-600 text-sm font-weight-bold">{{ $message }}</div>
+                                    @enderror
+                                    <div class="mt-2">
+                                        <div>
+                                            <label class="inline-flex items-center">
+                                                <input wire:model="answer" class="form-radio" type="radio" name="radio-direct" value="1" />
+                                                <span class="ml-2">{{ $question->option_a }}</span>
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <label class="inline-flex items-center">
+                                                <input wire:model="answer" class="form-radio" type="radio" name="radio-direct" value="2" />
+                                                <span class="ml-2">{{ $question->option_b }}</span>
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <label class="inline-flex items-center">
+                                                <input wire:model="answer" class="form-radio" type="radio" name="radio-direct" value="3" />
+                                                <span class="ml-2">{{ $question->option_c }}</span>
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <label class="inline-flex items-center">
+                                                <input wire:model="answer" class="form-radio" type="radio" name="radio-direct" value="4" />
+                                                <span class="ml-2">{{ $question->option_d }}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="block mt-2">
+                                    <button type="submit" class="py-1 px-2 bg-indigo-600 rounded-lg text-white">{{ $index+1 == count($arrayOfQuestions) ? 'simpan dan lanjut section 2' : 'simpan jawaban' }}</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
                 </div>
-                
-                <div>
-                    <button type="submit" class="py-1 px-2 border-2 ml-2 my-2 text-white bg-indigo-600 hover:bg-gray-400">{{ $index+1 == count($arrayOfQuestions) ? 'simpan dan lanjut section 2' : 'simpan jawaban' }}</button>
-                </div>
-            </form>
+            </div>
+            
         </div>
     </div>
 </div>

@@ -8,7 +8,77 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <form action="/admin/kelas/{{ $kelas->id }}" method="post">
+                <div class="mx-auto w-3/4 py-12 px-4 flex flex-row justify-center">
+                    <div class="mt-5 px-4 w-3/4">
+                        <form action="/admin/kelas/{{ $kelas->id }}" method="post" class="px-4">
+                            @method('PUT')
+                            @csrf
+                            <div class="grid grid-cols-1 gap-6 px-4">
+                                <label class="block">
+                                    <span class="text-gray-700">Nama Kelas</span>
+                                    <input value="{{ $kelas->nama ?? old('nama') }}" type="text" name="nama" id="nama" placeholder="Nama Kelas .." class="form-input mt-1 block w-full">
+                                    @error('nama')
+                                    <div class="text-red-600 font-weight-bold">{{ $message }}</div>
+                                    @enderror
+                                </label>
+                                <label class="block">
+                                    <span class="text-gray-700">Kuota Peserta</span>
+                                    <input value="{{ $kelas->quota ?? old('quota') }}" type="number" name="quota" id="quota" class="@error('quota') is-invalid @enderror form-input mt-1 block w-full">
+                                    @error('quota')
+                                    <div class="text-red-600 font-weight-bold">{{ $message }}</div>
+                                    @enderror
+                                </label>
+                                <label class="block">
+                                    <span class="text-gray-700">Harga Kelas</span>
+                                    <input value="{{ $kelas->price ?? old('price') }}" type="number" name="price" id="price" class="@error('price') is-invalid @enderror form-input mt-1 block w-full">
+                                    @error('price')
+                                    <div class="text-red-600 font-weight-bold">{{ $message }}</div>
+                                    @enderror
+                                </label>
+                                <label class="block">
+                                    <span class="text-gray-700">Tanggal Pelaksanaan</span>
+                                    <input value="{{ $kelas->pelaksanaan->isoFormat('YYYY-MM-DDThh:mm:ss') ?? old('pelaksanaan') }}" type="datetime-local" name="pelaksanaan" id="pelaksanaan" placeholder="Waktu Pelaksanaan" class="@error('pelaksanaan') is-invalid @enderror form-input mt-1 block w-full">
+                                    @error('pelaksanaan')
+                                    <div class="text-red-600 font-weight-bold">{{ $message }}</div>
+                                    @enderror
+                                </label>
+                                <label class="block">
+                                    <span class="text-gray-700">Batas Waktu Selesai Pelaksanaan</span>
+                                    <input value="{{ $kelas->akhir_pelaksanaan->isoFormat('YYYY-MM-DDThh:mm:ss') ?? old('akhir_pelaksanaan') }}" type="datetime-local" name="akhir_pelaksanaan" id="akhir_pelaksanaan" class="@error('akhir_pelaksanaan') is-invalid @enderror form-input mt-1 block w-full">
+                                    @error('akhir_pelaksanaan')
+                                    <div class="text-red-600 font-weight-bold">{{ $message }}</div>
+                                    @enderror
+                                </label>
+                                <label class="block">
+                                    <span class="text-gray-700">Batas Pendaftaran</span>
+                                    <input value="{{ $kelas->pendaftaran->isoFormat('YYYY-MM-DDThh:mm:ss') ?? old('pendaftaran') }}" type="datetime-local" name="pendaftaran" id="pendaftaran" class="@error('pendaftaran') is-invalid @enderror form-input mt-1 block w-full">
+                                    @error('pendaftaran')
+                                    <div class="text-red-600 font-weight-bold">{{ $message }}</div>
+                                    @enderror
+                                </label>
+                                <label class="block">
+                                    <span class="text-gray-700">Pilih Toefl yang Digunakan</span>
+                                    <select name="toefls[]" id="toefls" multiple class="@error('toefls') is-invalid @enderror form-multiselect block w-full mt-1">
+                                        @foreach ($kelas->toefls as $toefl)
+                                        <option disabled>{{ $toefl->title }}</option>
+                                        @endforeach
+
+                                        @foreach ($toefls as $toefl)
+                                            <option value="{{ $toefl->id }}">{{ $toefl->title }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('toefls')
+                                    <div class="text-red-600 font-weight-bold">{{ $message }}</div>
+                                    @enderror
+                                </label>
+                                <label class="block">
+                                    <button class="px-2 py-1 border border-transparent text-base font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-300" type="submit">Edit</button>
+                                </label>
+                            </div>
+                        </form> 
+                    </div>
+                </div> 
+                {{-- <form action="/admin/kelas/{{ $kelas->id }}" method="post">
                     @method('PUT')
                     @csrf
                     <div class="border-2 py-2">
@@ -58,14 +128,7 @@
                     <div>
                         <button class="px-2 py-1 border border-transparent text-base font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-300 md:py-4 md:text-lg md:px-10" type="submit">Simpan Perubahan Kelas</button>
                     </div>
-                </form>    
-            </div>
-            <div class="block mt-4">
-                <form action="/admin/kelas/{{ $kelas->id }}" method="POST">
-                    @method('DELETE')
-                    @csrf 
-                    <button type="submit" class="px-2 py-1 border border-transparent text-base font-medium rounded-md text-white bg-red-600 hover:bg-red-300 md:py-4 md:text-lg md:px-10">Hapus Kelas</button>
-                </form>
+                </form>     --}}
             </div>
         </div>
     </div>

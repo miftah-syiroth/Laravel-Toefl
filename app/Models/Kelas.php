@@ -14,9 +14,10 @@ class Kelas extends Model
     protected $fillable = [
         'nama',
         'pelaksanaan',
+        'akhir_pelaksanaan',
         'pendaftaran',
         'quota',
-        'prince',
+        'price',
         'ispublished',
         'register_status_id',
     ];
@@ -26,6 +27,13 @@ class Kelas extends Model
     {
         // return Carbon::parse($this->attributes['pelaksanaan'])->isoFormat('YYYY-MM-DDThh:mm:ss');
         return Carbon::parse($this->attributes['pelaksanaan']);
+    }
+
+    // mutator untuk merubah format tanggal pelaksanaan supaya dapat tampil di input datetime-local
+    public function getAkhirPelaksanaanAttribute($value)
+    {
+        // return Carbon::parse($this->attributes['pelaksanaan'])->isoFormat('YYYY-MM-DDThh:mm:ss');
+        return Carbon::parse($this->attributes['akhir_pelaksanaan']);
     }
 
     // mutator untuk merubah format tanggal pendaftaran supaya dapat tampil di input datetime-local

@@ -14,6 +14,7 @@
         </div>
         @endif
 
+        @unless (Auth::check())
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
             @if (session('message'))
             <div class="alert alert-success">
@@ -23,5 +24,8 @@
             
             @livewire('kelas.card-list')
         </div>
+        @endunless
+
+        
     </div>
 </x-guest-layout>
