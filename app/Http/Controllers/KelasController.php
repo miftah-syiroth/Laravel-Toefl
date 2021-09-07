@@ -32,6 +32,7 @@ class KelasController extends Controller
         ]);
 
         $attributes['ispublished'] = false;
+        $attributes['register_status_id'] = 2;
 
         $kelas = Kelas::create($attributes);
 
@@ -53,7 +54,7 @@ class KelasController extends Controller
             'nama' => 'required|max:255|string',
             'pelaksanaan' => 'required|date|after:pendaftaran',
             'akhir_pelaksanaan' => 'required|date|after:pelaksanaan',
-            'pendaftaran' => 'required|date|before:pelaksanaan|after:tomorrow',
+            'pendaftaran' => 'required|date|before:pelaksanaan',
             'quota' => 'required|integer',
             'toefls' => 'array',
             'price' => 'required|integer',

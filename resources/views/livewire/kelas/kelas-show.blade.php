@@ -14,7 +14,7 @@
                     </h3>
                 </div>
                 <div class="border-t border-gray-200">
-                    <dl>
+                    <dl wire:poll="updateKelas">
                         <div class="bg-gray-50 px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">
                                 Nama Kelas
@@ -29,6 +29,14 @@
                             </dt>
                             <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                 : {{ $kelas->pelaksanaan->isoFormat('dddd, DD MMMM Y hh:mm A') }} / {{ $kelas->pelaksanaan->diffForHumans() }}
+                            </dd>
+                        </div>
+                        <div class="bg-gray-50 px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium text-gray-500">
+                                Batas Waktu Pelaksanaan
+                            </dt>
+                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                : {{ $kelas->akhir_pelaksanaan->isoFormat('dddd, DD MMMM Y hh:mm A') }} / {{ $kelas->akhir_pelaksanaan->diffForHumans() }}
                             </dd>
                         </div>
                         <div class="bg-gray-50 px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -59,17 +67,20 @@
                             </dt>
                             <dd class="mt-1 text-sm font-semibold text-gray-900 sm:mt-0 sm:col-span-2 flex flex-row">
                                 <div class="w-full">
-                                    : {{ $kelas->registerStatus ? $kelas->registerStatus->status : '' }}
+                                    : {{ $kelas->registerStatus->status }}
                                 </div>
+
+                                @if ($button_visible)
                                 <div class="w-full flex flex-row">
-                                    @foreach ($register_statuses as $status)
-                                    <button wire:click="registration({{ $status->id }})" class="text-indigo-600 px-4">{{ $status->status }}</button>
-                                    @endforeach
+                                    <button wire:click="changeRegistrationStatus(1)" class="text-indigo-600 px-4">Pendaftaran Dibuka</button>
+                                    <button wire:click="changeRegistrationStatus(2)" class="text-indigo-600 px-4">Pendaftaran Ditutup</button>
                                 </div>
+                                @endif
+
                             </dd>
                         </div>
 
-                        <div wire:poll.5000="updateKelas" class="bg-white px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <div class="bg-white px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">
                                 Data Peserta
                             </dt>
@@ -101,7 +112,7 @@
                                                             <tr>
                                                                 <td class="text-center">
                                                                     <span class="px-2 my-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                                        {{ $kelas->peserta_ditolak_count ?  $kelas->peserta_ditolak_count : 0}}
+                                                                        {{ $kelas->peserta_ditolak ?  $kelas->peserta_ditolak : 0}}
                                                                     </span>
                                                                     <div class="py-2">
                                                                         <a href="" class="text-indigo-600 hover:text-indigo-900">lihat</a>
@@ -109,7 +120,7 @@
                                                                 </td>
                                                                 <td class="text-center">
                                                                     <span class="px-2 my-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                                        {{ $kelas->peserta_mengerjakan_count + $kelas->peserta_kadaluwarsa_count }}
+                                                                        {{ $kelas->peserta_mengerjakan + $kelas->peserta_kadaluwarsa }}
                                                                     </span>
                                                                     <div class="py-2">
                                                                         <a href="" class="text-indigo-600 hover:text-indigo-900">lihat</a>
@@ -117,7 +128,7 @@
                                                                 </td>
                                                                 <td class="text-center">
                                                                     <span class="px-2 my-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                                        {{ $kelas->peserta_mengerjakan_count ?  $kelas->peserta_mengerjakan_count : 0}}
+                                                                        {{ $kelas->peserta_mengerjakan ?  $kelas->peserta_mengerjakan : 0}}
                                                                     </span>
                                                                     <div class="py-2">
                                                                         <a href="" class="text-indigo-600 hover:text-indigo-900">lihat</a>
@@ -125,7 +136,7 @@
                                                                 </td>
                                                                 <td class="text-center">
                                                                     <span class="px-2 my-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                                        {{ $kelas->peserta_kadaluwarsa_count ?  $kelas->peserta_kadaluwarsa_count : 0}}
+                                                                        {{ $kelas->peserta_kadaluwarsa ?  $kelas->peserta_kadaluwarsa : 0}}
                                                                     </span>
                                                                     <div class="py-2">
                                                                         <a href="" class="text-indigo-600 hover:text-indigo-900">lihat</a>

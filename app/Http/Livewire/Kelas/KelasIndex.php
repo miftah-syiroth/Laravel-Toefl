@@ -9,14 +9,15 @@ class KelasIndex extends Component
 {
     public $kelas;
 
+    // it is planned for polling, but it's not important anymore to realtime at this page
     public function updateKelas()
     {
-        $this->kelas = Kelas::with(['users', 'registerStatus'])->withCount('users')->orderBy('id', 'DESC')->get();
+        $this->kelas = Kelas::with(['registerStatus'])->withCount(['users'])->orderBy('id', 'DESC')->get();
     }
 
     public function mount()
     {
-        $this->kelas = Kelas::with(['users', 'registerStatus'])->withCount('users')->orderBy('id', 'DESC')->get();
+        $this->updateKelas();
     }
 
     public function render()

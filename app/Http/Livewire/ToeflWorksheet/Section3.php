@@ -37,7 +37,12 @@ class Section3 extends Component
         // cek jika timer <= 0, harus distop dan next section 2
         if ($this->timer <= 0) {
             $this->save();
-            Auth::user()->syncPermissions('melihat skor');
+            $user = Auth::user()->update([
+                'status_id' => 5,
+            ]);
+            $user->givePermissionTo('melihat skor');
+            // hapus permission mengerjakan toefl supaya ga bisa ngerjain lg
+            $user->revokePermissionTo('mengerjakan toefl');
             return redirect()->to('/participant/dashboard');
         }
     }
@@ -104,9 +109,13 @@ class Section3 extends Component
 
         // cek if sudah soal terakhir, jika terakhir akan dioper ke section 2
         if ($this->index + 1 == count($this->arrayOfQuestions)) { // kalau udah soal ke 50/50
-            // buat permission view certificate ke user
-            Auth::user()->syncPermissions('melihat skor');
-            // $user->syncPermissions('view status');
+            // buat status sudah peserta menjadi sudah selesai toefl
+            $user = Auth::user()->update([
+                'status_id' => 5,
+            ]);
+            $user->givePermissionTo('melihat skor');
+            // hapus permission mengerjakan toefl supaya ga bisa ngerjain lg
+            $user->revokePermissionTo('mengerjakan toefl');
             // lakukan redirect
             return redirect()->to('/participant/dashboard');
         } else {

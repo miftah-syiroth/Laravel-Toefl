@@ -38,7 +38,7 @@ class UserController extends Controller
         ]);
 
         #cek kalau kuotanya udah penuh atau waktu pendaftaran sudah habis.details-heading
-        if ($kelas->register_status_id == 2) {
+        if ($kelas->register_status_id == 2 || $kelas->register_status_id == 3) {
             return redirect('/')->with('message', 'Kuota penuh atau pendaftaran berakhir');
         }
 

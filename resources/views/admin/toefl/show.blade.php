@@ -175,9 +175,9 @@
                                                                 <p class="text-sm text-gray-900">{{ $kelas->pelaksanaan->isoFormat('dddd, D MMMM Y') }}</p>
                                                             </td>
                                                             <td>
-                                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                                    {{ $kelas->status }}
-                                                                </span>
+                                                                <p class="text-sm text-gray-900">
+                                                                    {{ $kelas->registerStatus->status }}
+                                                                </p>
                                                             </td>
                                                         </tr>
                                                         @endforeach

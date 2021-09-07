@@ -16,7 +16,7 @@
                         Status Pendaftaran dan Pelaksanaan TOEFL
                     </p>
                 </div>
-                <div class="border-t border-gray-200">
+                <div wire:poll.visible.5000="checkStatusPermission" class="border-t border-gray-200">
                     <dl>
                         <div class="bg-gray-50 px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">
@@ -40,6 +40,14 @@
                             </dt>
                             <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                 : {{ $user->kelas->pelaksanaan->isoFormat('H:mm, dddd, D MMMM Y') }} ({{ $user->kelas->pelaksanaan->diffForHumans() }}) 
+                            </dd>
+                        </div>
+                        <div class="bg-white px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium text-gray-500">
+                                Batas Akhir Waktu Pelaksanaan TOEFL
+                            </dt>
+                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                : {{ $user->kelas->akhir_pelaksanaan->isoFormat('H:mm, dddd, D MMMM Y') }} ({{ $user->kelas->akhir_pelaksanaan->diffForHumans() }}) 
                             </dd>
                         </div>
                         <div class="bg-white px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -70,72 +78,7 @@
                                 Hasil Kerja TOEFL
                             </dt>
                             <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                <div class="flex flex-col">
-                                    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                                            <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                                                <table class="min-w-full divide-y divide-gray-200">
-                                                    <thead class="bg-gray-50">
-                                                        <tr>
-                                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sections</th>
-                                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah Dikerjakan</th>
-                                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah Benar</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody class="bg-white divide-y divide-gray-200">
-                                                        <tr>
-                                                            <td class="px-6 py-4 whitespace-nowrap">Listening Comprehension</td>
-                                                            <td>
-                                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                                    30
-                                                                </span>
-                                                            </td>
-                                                            <td>
-                                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                                    15
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="px-6 py-4 whitespace-nowrap">Listening Comprehension</td>
-                                                            <td>
-                                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                                    30
-                                                                </span>
-                                                            </td>
-                                                            <td>
-                                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                                    15
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="px-6 py-4 whitespace-nowrap">Listening Comprehension</td>
-                                                            <td>
-                                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                                    30
-                                                                </span>
-                                                            </td>
-                                                            <td>
-                                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                                    15
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="px-6 py-4 whitespace-nowrap">FINAL SCORE</td>
-                                                            <td class="text-left">
-                                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                                    15
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                @livewire('toefl.toefl-score', ['user' => $user], key($user->id))
                             </dd>
                         </div>
                         @endcan

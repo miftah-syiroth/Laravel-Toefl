@@ -72,7 +72,7 @@
                                             </td>
                                             <td class="px-6 py-2 whitespace-nowrap text-center">
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                    {{ $toefl->classes_count }}
+                                                    {{ $toefl->kelas_count }}
                                                 </span>
                                             </td>
                                             <td class="px-6 py-2 whitespace-nowrap text-center">

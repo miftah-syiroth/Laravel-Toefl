@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Http\Livewire\Toefl;
 
 use App\Models\Conversion;
-use App\Models\Question;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
-class Certificate extends Component
+class ToeflScore extends Component
 {
     public $score;
+    public $user;
 
     public function getAnsweredQuestions($section_id)
     {
-        $answers =  Auth::user()->questions()->get();
-        return $answers->where('section_id', $section_id);
+        return $this->user->questions()->where('section_id', $section_id)->get();
+        // return $answers->where('section_id', $section_id);
     }
 
     public function getCorrectAnswers($questionAnswered)
@@ -39,10 +38,10 @@ class Certificate extends Component
         return ($section1_score + $section2_score + $section3_score) * 10 / 3;
     }
 
-    public function mount()
+    public function mount($user)
     {
-        # cek jika sudah punya score maka tampilkan aja, jika belum input baru
-        $score = Auth::user()->score;
+        $score = $user->score;
+
         if ($score) { // kalau udah ada kolom score
             $this->score = $score;
         } else { // input
@@ -64,13 +63,12 @@ class Certificate extends Component
 
             $scores['final_score'] = $this->getFinalScore($scores['section1_score'], $scores['section2_score'], $scores['section3_score']);
 
-            $this->score = Auth::user()->score()->create($scores);
+            $this->score = $user->score()->create($scores);
         }
-        
     }
-
+    
     public function render()
     {
-        return view('livewire.certificate');
+        return view('livewire.toefl.toefl-score');
     }
 }
