@@ -16,7 +16,7 @@
                         Status Pendaftaran dan Pelaksanaan TOEFL
                     </p>
                 </div>
-                <div wire:poll.visible.5000="checkStatusPermission" class="border-t border-gray-200">
+                <div wire:poll="checkStatusPermission" class="border-t border-gray-200">
                     <dl>
                         <div class="bg-gray-50 px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">

@@ -7,9 +7,35 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- This example requires Tailwind CSS v2.0+ -->
-            <div class="block mb-4">
-                <a href="/admin/toefls/create" class="px-2 py-1 border border-transparent text-base font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-300">Create New Toefl</a>
+            <div class="flex flex-row justify-between">
+                <div class="mb-2">
+                    <a href="/admin/toefls/create" class="px-2 py-1 border border-transparent text-base font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-300">Create New Toefl</a>
+                </div>
+                <div class="mb-2">
+                    <form wire:submit.prevent="sorting">
+                        <div class="flex flex-row">
+                            <div>
+                                <select wire:model="sortBy" class="text-sm form-select rounded-lg">
+                                    <option hidden>Sort By</option>
+                                    <option value="title">Judul</option>
+                                    <option value="created_at">Waktu Dibuat</option>
+                                    <option value="kelas_count">Jumlah Kelas</option>
+                                    <option value="users_count">Jumlah Peserta</option>
+                                </select>
+                            </div>
+                            <div>
+                                <select wire:model="order" class="text-sm form-select rounded-lg">
+                                    <option hidden>Order</option>
+                                    <option value="ASC">Naik</option>
+                                    <option value="DESC">Turun</option>
+                                </select>
+                            </div>
+                            <div class="px-4">
+                                <button class="px-2 py-1 border border-transparent text-base font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-300">filter</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="flex flex-col">
@@ -42,7 +68,7 @@
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
+                                    <tbody wire:poll="updateToefls" class="bg-white divide-y divide-gray-200">
             
                                         @foreach ($toefls as $key => $toefl)
                                         <tr>

@@ -103,7 +103,6 @@
                                                         <thead class="bg-gray-50">
                                                             <tr>
                                                                 <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ditolak</th>
-                                                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Diterima</th>
                                                                 <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Mengerjakan</th>
                                                                 <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Kadaluwarsa</th>
                                                             </tr>
@@ -114,33 +113,16 @@
                                                                     <span class="px-2 my-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                                                         {{ $kelas->peserta_ditolak ?  $kelas->peserta_ditolak : 0}}
                                                                     </span>
-                                                                    <div class="py-2">
-                                                                        <a href="" class="text-indigo-600 hover:text-indigo-900">lihat</a>
-                                                                    </div>
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    <span class="px-2 my-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                                        {{ $kelas->peserta_mengerjakan + $kelas->peserta_kadaluwarsa }}
-                                                                    </span>
-                                                                    <div class="py-2">
-                                                                        <a href="" class="text-indigo-600 hover:text-indigo-900">lihat</a>
-                                                                    </div>
                                                                 </td>
                                                                 <td class="text-center">
                                                                     <span class="px-2 my-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                                                         {{ $kelas->peserta_mengerjakan ?  $kelas->peserta_mengerjakan : 0}}
                                                                     </span>
-                                                                    <div class="py-2">
-                                                                        <a href="" class="text-indigo-600 hover:text-indigo-900">lihat</a>
-                                                                    </div>
                                                                 </td>
                                                                 <td class="text-center">
                                                                     <span class="px-2 my-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                                                         {{ $kelas->peserta_kadaluwarsa ?  $kelas->peserta_kadaluwarsa : 0}}
                                                                     </span>
-                                                                    <div class="py-2">
-                                                                        <a href="" class="text-indigo-600 hover:text-indigo-900">lihat</a>
-                                                                    </div>
                                                                     
                                                                 </td>
                                                             </tr>

@@ -12,8 +12,6 @@ use Spatie\Permission\Models\Permission;
 class ToeflInformation extends Component
 {
     public $user;
-    // public $kelas;
-    // public $status;
 
     public function startToefl()
     {

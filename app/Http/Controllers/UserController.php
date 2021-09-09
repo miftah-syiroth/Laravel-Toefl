@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Fortify\PasswordValidationRules;
+use App\Exports\ParticipantsExport;
 use App\Models\Kelas;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -67,5 +70,22 @@ class UserController extends Controller
         }
 
         return redirect('/participant/dashboard');
+    }
+
+    public function export($kelas = null)
+    {
+        // kalau ada kelasnya, ambil peserta berdasarkan kelas
+        if ($kelas) {
+            $participants = Kelas::find($kelas)->users()->orderBy('id', 'DESC')->get();
+        } else {
+            $participants = User::role('participant')->with(['kelas', 'status', 'score'])->orderBy('id', 'DESC')->get();
+        }
+        
+        return Excel::download(new ParticipantsExport($participants), 'participants.xlsx');
+    }
+
+    public function uji()
+    {
+        dd(true);
     }
 }

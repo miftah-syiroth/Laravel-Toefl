@@ -1,6 +1,46 @@
 <div class="container mx-auto px-4">
-    <div class="flex justify-center">
-        <div>ini bisa untuk navigasi seperti filter tanggal dan status kelas</div>
+    <div class="flex flex-row justify-center mb-4">
+        <div class="bg-gray-200 px-2 py-2 mb-4 rounded-lg mr-2">
+            <form wire:submit.prevent="filtering">
+                <div class="flex flex-row">
+                    <div>
+                        <select wire:model="register_status" class="text-sm rounded-lg">
+                            <option hidden>Pilih status</option>
+                            <option value="1">Pendaftaran Dibuka</option>
+                            <option value="2">Pendaftaran Ditutup</option>
+                            <option value="3">Telah Selesai</option>
+                        </select>
+                    </div>
+                    <div class="px-4">
+                        <button class="px-2 py-1 border border-transparent text-base font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-300">filter</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="bg-gray-200 px-2 py-2 mb-4 rounded-lg mr-2">
+            <form wire:submit.prevent="sorting">
+                <div class="flex flex-row">
+                    <div>
+                        <select wire:model="sortBy" class="text-sm form-select rounded-lg">
+                            <option hidden>Sort By</option>
+                            <option value="nama">Judul</option>
+                            <option value="pelaksanaan">Waktu Pelaksanaan</option>
+                            <option value="pendaftaran">Waktu Pendaftaran</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select wire:model="order" class="text-sm form-select rounded-lg">
+                            <option hidden>Order</option>
+                            <option value="ASC">Naik</option>
+                            <option value="DESC">Turun</option>
+                        </select>
+                    </div>
+                    <div class="px-4">
+                        <button class="px-2 py-1 border border-transparent text-base font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-300">urutkan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
     
     
