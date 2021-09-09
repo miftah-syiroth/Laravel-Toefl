@@ -2,10 +2,12 @@
 
 namespace App\Http\Livewire\Participant;
 
+use App\Exports\ParticipantsExport;
 use App\Models\Kelas;
 use App\Models\User;
 use Livewire\Component;
 use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
@@ -63,6 +65,11 @@ class ParticipantIndex extends Component
         } else {
             $this->participants = User::role('participant')->with('kelas')->where('status_id', $this->participant_status)->orderBy('id', 'DESC')->get();
         }
+    }
+
+    public function export()
+    {
+        return Excel::download(new ParticipantsExport($this->participants), 'participants.xlsx');
     }
 
     public function mount($kelas = null) #sintaks PHP optional argument

@@ -71,9 +71,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::put('/kelas/{kelas}', [KelasController::class, 'update'])->name('kelas.update');
         Route::delete('/kelas/{kelas}', [KelasController::class, 'destroy'])->name('kelas.destroy');
 
-        // fitur export peserta
-        Route::get('/participants/export/{kelas?}', [UserController::class, 'export']);
-
         Route::get('/participants', ParticipantIndex::class)->name('participants.index');
         Route::get('/participants/{participant}', ShowParticipant::class)->name('participant.show');
         Route::get('/participants/kelas/{kelas}', ParticipantIndex::class);

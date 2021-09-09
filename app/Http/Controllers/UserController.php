@@ -72,18 +72,6 @@ class UserController extends Controller
         return redirect('/participant/dashboard');
     }
 
-    public function export($kelas = null)
-    {
-        // kalau ada kelasnya, ambil peserta berdasarkan kelas
-        if ($kelas) {
-            $participants = Kelas::find($kelas)->users()->orderBy('id', 'DESC')->get();
-        } else {
-            $participants = User::role('participant')->with(['kelas', 'status', 'score'])->orderBy('id', 'DESC')->get();
-        }
-        
-        return Excel::download(new ParticipantsExport($participants), 'participants.xlsx');
-    }
-
     public function uji()
     {
         dd(true);

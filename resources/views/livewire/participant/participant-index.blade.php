@@ -51,7 +51,7 @@
                     </form>
                 </div>
                 <div class="bg-gray-200 px-2 py-2 mb-4 rounded-lg mr-2 flex items-center">
-                    <a href="/admin/participants/export/{{ $kelas ? $kelas->id : '' }}" class="px-2 py-1 bg-indigo-500 text-sm text-white rounded-lg">CETAK XLS</a>
+                    <button wire:click="export" class="px-2 py-1 bg-indigo-500 text-sm text-white rounded-lg">CETAK XLS</button>
                 </div>
             </div>
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
