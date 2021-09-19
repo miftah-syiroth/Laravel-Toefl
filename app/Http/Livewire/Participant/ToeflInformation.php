@@ -52,7 +52,12 @@ class ToeflInformation extends Component
 
     public function downloadReceipt()
     {
-        // dd($this->user->receipt_of_payment);
+        return Storage::disk('public')->download($this->user->receipt_of_payment);
+    }
+
+    public function downloadCertificate()
+    {
+        return Storage::disk('local')->download($this->user->certificate);
     }
 
     public function checkStatusPermission()

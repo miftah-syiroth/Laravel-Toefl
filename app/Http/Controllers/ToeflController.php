@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class ToeflController extends Controller
 {
@@ -25,33 +27,19 @@ class ToeflController extends Controller
         // validasi dulu
         $attributes = $request->validate([
             'title' => 'required|unique:toefls|max:255|string',
-            'section_1_direction' => 'required',
             'section_1_imageable' => 'required|image',
             'section_1_track' => 'required|mimes:mp3',
-            'part_a_direction' => 'required',
             'part_a_imageable' => 'required|image',
-            'part_a_track' => 'required|mimes:mp3',
-            'part_b_direction' => 'required',
             'part_b_imageable' => 'required|image',
-            'part_b_track' => 'required|mimes:mp3',
-            'part_c_direction' => 'required',
             'part_c_imageable' => 'required|image',
-            'part_c_track' => 'required|mimes:mp3',
-            'section_2_direction' => 'required',
             'section_2_imageable' => 'required|image',
-            'structure_direction' => 'required',
             'structure_imageable' => 'required|image',
-            'written_expression_direction' => 'required',
             'written_expression_imageable' => 'required|image',
-            'section_3_direction' => 'required',
             'section_3_imageable' => 'required|image',
         ]);
 
         // simpan audio full section 1 dan ambil pathnya
         $attributes['section_1_track'] = $attributes['section_1_track']->store("toefl/tracks/listening");
-        $attributes['part_a_track'] = $attributes['part_a_track']->store("toefl/tracks/part-a");
-        $attributes['part_b_track'] = $attributes['part_b_track']->store("toefl/tracks/part-b");
-        $attributes['part_c_track'] = $attributes['part_c_track']->store("toefl/tracks/part-c");
 
         // simpan gambarnya
         $attributes['section_1_imageable'] = $attributes['section_1_imageable']->store("toefl/images/section-1");
@@ -125,25 +113,14 @@ class ToeflController extends Controller
         // validasi
         $attributes = $request->validate([
             'title' => 'required|max:255|string',
-            'section_1_direction' => 'required',
             'section_1_imageable' => 'image',
             'section_1_track' => 'mimes:mp3',
-            'part_a_direction' => 'required',
             'part_a_imageable' => 'image',
-            'part_a_track' => 'mimes:mp3',
-            'part_b_direction' => 'required',
             'part_b_imageable' => 'image',
-            'part_b_track' => 'mimes:mp3',
-            'part_c_direction' => 'required',
             'part_c_imageable' => 'image',
-            'part_c_track' => 'mimes:mp3',
-            'section_2_direction' => 'required',
             'section_2_imageable' => 'image',
-            'structure_direction' => 'required',
             'structure_imageable' => 'image',
-            'written_expression_direction' => 'required',
             'written_expression_imageable' => 'image',
-            'section_3_direction' => 'required',
             'section_3_imageable' => 'image',
         ]);
 
@@ -162,21 +139,6 @@ class ToeflController extends Controller
         if (isset($attributes['section_1_track'])) { // cek ada input audio ssection 1, jik true
             Storage::delete($toefl->section_1_track); // hapus track lama toefl dari storage
             $attributes['section_1_track'] = $attributes['section_1_track']->store("toefl/tracks/listening");
-        }
-
-        if (isset($attributes['part_a_track'])) { // cek ada input audio ssection 1, jik true
-            Storage::delete($toefl->part_a_track); // hapus track lama toefl dari storage
-            $attributes['part_a_track'] = $attributes['part_a_track']->store("toefl/tracks/part-a");
-        }
-
-        if (isset($attributes['part_b_track'])) { // cek ada input audio ssection 1, jik true
-            Storage::delete($toefl->part_b_track); // hapus track lama toefl dari storage
-            $attributes['part_b_track'] = $attributes['part_b_track']->store("toefl/tracks/part-b");
-        }
-        
-        if (isset($attributes['part_c_track'])) { // cek ada input audio ssection 1, jik true
-            Storage::delete($toefl->part_c_track); // hapus track lama toefl dari storage
-            $attributes['part_c_track'] = $attributes['part_c_track']->store("toefl/tracks/part-c");
         }
         
         // simpan gambarnya
@@ -217,7 +179,6 @@ class ToeflController extends Controller
 
         if (isset($attributes['section_3_imageable'])) { // cek ada input audio ssection 1, jik true
             Storage::delete($toefl->section_3_imageable); // hapus track lama toefl dari storage
-
             $attributes['section_3_imageable'] = $attributes['section_3_imageable']->store("toefl/images/section-3");
         }
         
@@ -226,13 +187,20 @@ class ToeflController extends Controller
 
     public function destroy(Toefl $toefl)
     {
-        // hapus semua file yg berkaitan :v
+        // hapus semua file track dan image yg ada pada tabel
         $this->deleteFileUploaded($toefl);
 
-        $toefl->questions()->users()->detach();
+        // hapus jawaban peserta yang soalnya dari toefl ini
+        // $toefl->questions()->users()->detach();
+        foreach ($toefl->questions as $key => $question) {
+            $question->users()->detach();
+        }
 
         // hapus questionny
         $toefl->questions()->delete();
+
+        // hapus pesertanya, sebenernya bisa tambah manajemen lain. tp males
+        $toefl->users()->delete();
 
         $toefl->delete(); // hapus row
 
@@ -242,9 +210,6 @@ class ToeflController extends Controller
     public function deleteFileUploaded($toefl)
     {
         Storage::delete($toefl->section_1_track); // hapus track lama toefl dari storage
-        Storage::delete($toefl->part_a_track);
-        Storage::delete($toefl->part_b_track);
-        Storage::delete($toefl->part_c_track);
 
         Storage::delete($toefl->section_1_imageable);
         Storage::delete($toefl->part_a_imageable);
@@ -273,6 +238,9 @@ class ToeflController extends Controller
         if ($lastQuestion) {
             #cek kalau udah selesai garapnya
             if ($lastQuestion->section_id == 3 && ($lastQuestion->pivot->last_question >= 49 || $lastQuestion->pivot->last_minute <= 0)) {
+                $user->givePermissionTo('melihat skor');
+                // hapus permission mengerjakan toefl supaya ga bisa ngerjain lg
+                $user->revokePermissionTo('mengerjakan toefl');
                 return redirect('/participant/dashboard');
             }
 
@@ -312,6 +280,9 @@ class ToeflController extends Controller
         if ($lastQuestion) {
             #cek kalau udah selesai garapnya
             if ($lastQuestion->section_id == 3 && ($lastQuestion->pivot->last_question >= 49 || $lastQuestion->pivot->last_minute <= 0)) {
+                $user->givePermissionTo('melihat skor');
+                // hapus permission mengerjakan toefl supaya ga bisa ngerjain lg
+                $user->revokePermissionTo('mengerjakan toefl');
                 return redirect('/participant/dashboard');
             }
 
@@ -344,11 +315,15 @@ class ToeflController extends Controller
         # selesai adalah jika melewati waktu pelaksanaan ATAU berada pada section 3 soal ke 50 ATAU section 3 dgn last_minute <=0. SYARAT PERTAMA BELUM DIIMPLEMENTASI
         # cek jika waktu pengerjaan sudah berakhir
         #cek perkejaan baru, kembalikan ke pekerjaan semestinya atau sudah selesai
-        $lastQuestion = $this->getLastQuestion();
+        $user = Auth::user();
+        $lastQuestion = $user->questions()->orderBy('passage_id', 'DESC')->orderBy('id', 'DESC')->first();
 
         if ($lastQuestion) {
             #cek kalau udah selesai garapnya
             if ($lastQuestion->section_id == 3 && ($lastQuestion->pivot->last_question >= 49 || $lastQuestion->pivot->last_minute <= 0)) {
+                $user->givePermissionTo('melihat skor');
+                // hapus permission mengerjakan toefl supaya ga bisa ngerjain lg
+                $user->revokePermissionTo('mengerjakan toefl');
                 return redirect('/participant/dashboard');
             }
 

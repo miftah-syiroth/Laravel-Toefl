@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="flex flex-row justify-between">
                 <div class="mb-2">
-                    <a href="/admin/toefls/create" class="px-2 py-1 border border-transparent text-base font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-300">Create New Toefl</a>
+                    <a href="/admin/toefls/create" class="px-2 py-1 border border-transparent text-base font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-300">Buat TOEFL Baru</a>
                 </div>
                 <div class="mb-2">
                     <form wire:submit.prevent="sorting">
@@ -31,7 +31,7 @@
                                 </select>
                             </div>
                             <div class="px-4">
-                                <button class="px-2 py-1 border border-transparent text-base font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-300">filter</button>
+                                <button class="px-2 py-1 border border-transparent text-base font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-300">urutkan</button>
                             </div>
                         </div>
                     </form>

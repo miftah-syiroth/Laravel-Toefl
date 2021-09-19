@@ -9,7 +9,7 @@ use Livewire\Component;
 class Section1 extends Component
 {
     // 2100
-    public $timer = 2100, $menit, $detik;
+    public $timer = 21, $menit, $detik;
 
     public $toefl;
 
@@ -51,7 +51,7 @@ class Section1 extends Component
 
     public function saveAnswer()
     {
-        $this->validate();
+        // $this->validate();
         
         // score 1 jika answer == key_answer, 0 jika salah
         $score = $this->question->key_answer == $this->answer ? 1 : 0;

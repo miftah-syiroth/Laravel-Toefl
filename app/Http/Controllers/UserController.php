@@ -71,9 +71,4 @@ class UserController extends Controller
 
         return redirect('/participant/dashboard');
     }
-
-    public function uji()
-    {
-        dd(true);
-    }
 }

@@ -31,8 +31,8 @@ class KelasController extends Controller
             'price' => 'required|integer',
         ]);
 
-        $attributes['ispublished'] = false;
-        $attributes['register_status_id'] = 2;
+        $attributes['ispublished'] = false; // buat tidak terpublikasi ketika pertama dibuat
+        $attributes['register_status_id'] = 2; // buat pendaftaran ditutup ketika pertama dibuat
 
         $kelas = Kelas::create($attributes);
 

@@ -5,8 +5,11 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="my-2">
+                <a href="/admin/toefls/{{ $toefl->id }}" type="submit" class="rounded-lg px-3 py-1 bg-indigo-600 text-white hover:bg-red-300">Kembali</a>
+            </div>
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg px-6 py-6">
                 <div class="flex flex-row">
                     <div class="border rounded-xl py-2 px-6 w-full mr-2">

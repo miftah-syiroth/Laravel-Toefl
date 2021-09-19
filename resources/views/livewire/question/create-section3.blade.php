@@ -7,6 +7,9 @@
 
     <div class="py-12">
         <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
+            <div class="my-2">
+                <a href="/admin/toefls/{{ $toefl->id }}" type="submit" class="rounded-lg px-3 py-1 bg-indigo-600 text-white hover:bg-red-300">Kembali</a>
+            </div>
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg px-6 py-6">
                 @if (session()->has('message'))
                     <div class="font-semibold text-red-600">
@@ -17,21 +20,31 @@
                     <div class="border rounded-xl py-2 px-6 w-full mr-2">
 
                         <div class="border-b py-4">
-                            <form wire:submit.prevent="savePassage">
-                                @if ($passage_selected)
-                                    <img src="{{ asset('/storage/' . $passage_selected->imageable) }}" alt="gambar passage" class="shadow-xl my-4">
-                                @endif
-                                <label class="block mt-2">
-                                    <span class="text-gray-700">Gambar Passage</span>
-                                    @error('passage')
-                                    <div class="text-red-600 text-sm font-weight-bold">{{ $message }}</div>
-                                    @enderror
-                                    <input wire:model="passage" type="file" class="mt-1 block w-full" />
-                                </label>
-                                <div class="block mt-2">
-                                    <button type="submit" class="py-1 px-2 bg-indigo-600 rounded-lg text-white">simpan</button>
+                            @if ($passage_selected)
+                                <img src="{{ asset('/storage/' . $passage_selected->imageable) }}" alt="gambar passage" class="shadow-xl my-4">
+                            @endif
+                            <div class="flex flex-row justify-between content-center">
+                                <div>
+                                    <form wire:submit.prevent="savePassage">
+                                        <label class="block mt-2">
+                                            <span class="text-gray-700">Gambar Passage</span>
+                                            @error('passage')
+                                            <div class="text-red-600 text-sm font-weight-bold">{{ $message }}</div>
+                                            @enderror
+                                            <input wire:model="passage" type="file" class="mt-1 block w-full" />
+                                        </label>
+                                        <div class="block mt-2">
+                                            <button type="submit" class="py-1 px-2 bg-indigo-600 rounded-lg text-white">simpan</button>
+                                        </div>
+                                    </form>
                                 </div>
-                            </form>
+                                <div class="py-10">
+                                    @if ($passage_selected)
+                                    <button wire:click="deletePassage" class="px-2 py-1 rounded-lg bg-red-600 border text-white">hapus</button>
+                                    @endif
+                                </div>                                
+                            </div>
+                            
                         </div>
 
                         <div class="rounded-xl py-2 px-2 full ml-2 flex flex-row flex-wrap">
@@ -56,6 +69,12 @@
                     <div class="border rounded-xl py-2 px-2 w-3/4 ml-2">
                         <div class="px-2">                            
                             <div class="mt-4 max-w-md">
+                                @if ($question_selected)
+                                <div class="text-right">
+                                    <button wire:click="deleteQuestion" class="px-2 py-1 rounded-lg bg-red-700 text-white hover:bg-red-600">hapus</button>
+                                </div>
+                                @endif
+                                                                
                                 @if ($passage_selected)
                                 <div class="grid grid-cols-1 gap-6">
                                     <form wire:submit.prevent="saveQuestion">

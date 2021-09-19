@@ -57,7 +57,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::delete('/toefls/{toefl}', [ToeflController::class, 'destroy'])->name('toefls.destroy');
     
         // routing mengelola suatu toefl question
-        // Route::get('/toefls/{toefl}/sections/{section}/questions/create', [QuestionController::class, 'create']);
         Route::get('/toefls/{toefl}/sections/1/questions/create', CreateSection1::class); //utk sections 1
         Route::get('/toefls/{toefl}/sections/2/questions/create', CreateSection2::class); //utk sections 2
         Route::get('/toefls/{toefl}/sections/3/questions/create', CreateSection3::class); //utk sections 3

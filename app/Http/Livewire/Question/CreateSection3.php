@@ -73,14 +73,22 @@ class CreateSection3 extends Component
         if (!$this->isComplete) {
             $this->passage = $this->passage->store("toefl/images/passages");
 
-            $this->toefl->passages()->create([
+            // tampilkan lgsg passage yg telah dibuat
+            $this->passage_selected = $this->toefl->passages()->create([
                 'imageable' => $this->passage,
             ]);
+
+            // tampilkan form input soal pada passage yg baru dibuat
+            $this->questions = $this->passage_selected->questions()->get();
 
             //update model toeflnya dulu setelah save narasi biar keubah
             $this->passages = Toefl::find($this->toefl->id)->passages()->get();
 
-            $this->reset(['passage', 'passage_selected']);
+            $this->reset(['passage']);
+
+            # cek iscomplete
+            $this->isComplete = $this->toefl->questions()->where('section_id', 3)->count() == 50 ? true : false;
+
         } else {
             session()->flash('message', 'Soal sudah maksimal');
         }
@@ -90,11 +98,27 @@ class CreateSection3 extends Component
     public function updatePassage()
     {
         Storage::delete($this->passage_selected->imageable); // hapus gambar sebelumnya dari storage
-        $this->passage = $this->passage->store("toefl/images/question/written-expression");
+        $this->passage = $this->passage->store("toefl/images/passages");
 
         $this->passage_selected->update([
             'imageable' => $this->passage,
         ]);
+        $this->reset(['passage', 'passage_selected']);
+    }
+
+    // hapus passage dan soal-soalnya
+    public function deletePassage()
+    {
+        # ambil passage selected, hapus soal-soalnya
+        $this->passage_selected->questions()->delete();
+        # hapus file gambar passage dari storage
+        Storage::delete($this->passage_selected->imageable); // hapus gambar sebelumnya dari storage
+        #hapus passage selectednya
+        $this->passage_selected->delete();
+
+        //update model toeflnya dulu setelah hapus narasi biar keubah
+        $this->passages = Toefl::find($this->toefl->id)->passages()->get();
+
         $this->reset(['passage', 'passage_selected']);
     }
 
@@ -137,20 +161,27 @@ class CreateSection3 extends Component
     // fungsi untuk menyimpan pertanyaan baru
     public function storeQuestion()
     {
-        $this->passage_selected->questions()->create([
-            'section_id' => 3,
-            'toefl_id' => $this->toefl->id,
-            'question' => $this->question,
-            'option_a' => $this->option_a,
-            'option_b' => $this->option_b,
-            'option_c' => $this->option_c,
-            'option_d' => $this->option_d,
-            'key_answer' => $this->key_answer,
-        ]);
+        if (!$this->isComplete) {
+            $this->passage_selected->questions()->create([
+                'section_id' => 3,
+                'toefl_id' => $this->toefl->id,
+                'question' => $this->question,
+                'option_a' => $this->option_a,
+                'option_b' => $this->option_b,
+                'option_c' => $this->option_c,
+                'option_d' => $this->option_d,
+                'key_answer' => $this->key_answer,
+            ]);
+    
+            $this->reset(['option_a', 'option_b', 'option_c', 'option_d', 'key_answer', 'question']);
+    
+            # cek udah complete 50 atau belum
+            $this->isComplete = $this->toefl->questions()->where('section_id', 3)->count() == 50 ? true : false;
 
-        $this->reset(['option_a', 'option_b', 'option_c', 'option_d', 'key_answer', 'question']);
-
-        $this->questions = $this->passage_selected->questions()->get();
+            $this->questions = $this->passage_selected->questions()->get();
+        } else {
+            session()->flash('message', 'Soal sudah maksimal');
+        }
     }
 
     // fungsi untuk mengupdate pertanyaan
@@ -166,6 +197,15 @@ class CreateSection3 extends Component
         ]);
 
         $this->reset(['option_a', 'option_b', 'option_c', 'option_d', 'key_answer', 'question_selected', 'question']);
+    }
+
+    public function deleteQuestion()
+    {
+        $this->question_selected->delete();
+
+        $this->reset(['option_a', 'option_b', 'option_c', 'option_d', 'key_answer', 'question_selected', 'question']);
+
+        $this->questions = $this->passage_selected->questions()->get();
     }
 
     public function mount(Toefl $toefl)

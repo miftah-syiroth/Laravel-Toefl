@@ -6,19 +6,19 @@
 
         </div>
 
-        <div class="border rounded-xl py-2 px-2 max-w-3/4 w-3/4 ml-2">
+        <div class="border rounded-xl py-2 px-2 w-full ml-2">
             <div class="flex flex-col">
                 <div wire:poll.visible="countdown" class="mb-4">
                     <p class="text-right font-semibold">waktu anda tersisa {{ $menit }} menit {{ $detik }} detik</p>
                 </div>
 
-                <div class="border rounded-xl py-2 px-6 w-full mr-2">
+                <div class="border rounded-xl py-2 px-2 w-full mr-2">
                     <div class="mt-4 max-w-md">
                         <div class="flex flex-row justify-between">
                             <p class="font-semibold">{{ $sub_section->name }}</p>
                             <p class="text-right font-semibold">No. {{ $index+1 }} / 40</p>
                         </div>
-                        <div class="grid grid-cols-1 gap-3">
+                        <div class="grid grid-cols-1">
                             <form wire:submit.prevent="save">
                                 <div class="block mt-2">
                                     @error('answer')

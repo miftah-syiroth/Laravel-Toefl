@@ -20,6 +20,8 @@ class ToeflIndex extends Component
 
     public function sorting()
     {
+        $this->validate();
+        
         $this->is_sorted = true;
 
         $this->toefls = Toefl::withCount(['questions', 'kelas', 'users'])->orderBy($this->sortBy, $this->order)->get();

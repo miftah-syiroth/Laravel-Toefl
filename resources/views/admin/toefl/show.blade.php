@@ -1,14 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight uppercase">
-            {{ __('SHOW TOEFL : ') }} {{ $toefl->title }}
+            {{ __('KELOLA SOAL TOEFL : ') }} {{ $toefl->title }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-8">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
             {{-- kalau ga dipakai di kelas, bisa dihapus --}}
-            @if ( $toefl->kelas_count == 0 )
+            {{-- @if ( $toefl->kelas_count == 0 )
             <div class="my-2">
                 <form action="/admin/toefls/{{ $toefl->id }}" method="post">
                     @csrf
@@ -16,8 +16,7 @@
                     <button type="submit" class="rounded-lg px-3 py-1 bg-red-600 text-white hover:bg-red-300">Hapus</button>
                 </form>
             </div>
-            @endif
-            
+            @endif --}}
 
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="px-4 py-5 sm:px-6">
@@ -198,9 +197,6 @@
                                 <div class="flex flex-row">
                                     <div>
                                         <p>: telah dikerjakan oleh {{ $toefl->users_count }} peserta</p>
-                                    </div>
-                                    <div class="px-4">
-                                        <a href="" class="text-indigo-500 hover:text-indigo-900 font-bold">lihat</a>
                                     </div>
                                 </div>
                             </dd>

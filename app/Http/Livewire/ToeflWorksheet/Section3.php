@@ -14,6 +14,8 @@ class Section3 extends Component
     public $timer, $menit, $detik;
     public $index = 0;
     public $direction_visible = false;
+    
+    public $user;
 
     public $toefl;
 
@@ -37,12 +39,12 @@ class Section3 extends Component
         // cek jika timer <= 0, harus distop dan next section 2
         if ($this->timer <= 0) {
             $this->save();
-            $user = Auth::user()->update([
+            $this->user->update([
                 'status_id' => 5,
             ]);
-            $user->givePermissionTo('melihat skor');
+            $this->user->givePermissionTo('melihat skor');
             // hapus permission mengerjakan toefl supaya ga bisa ngerjain lg
-            $user->revokePermissionTo('mengerjakan toefl');
+            $this->user->revokePermissionTo('mengerjakan toefl');
             return redirect()->to('/participant/dashboard');
         }
     }
@@ -65,7 +67,7 @@ class Section3 extends Component
 
     public function save()
     {
-        $this->validate();
+        // $this->validate();
         if ($this->question_selected) {
             $this->updateAnswer();
         } else {
@@ -110,12 +112,12 @@ class Section3 extends Component
         // cek if sudah soal terakhir, jika terakhir akan dioper ke section 2
         if ($this->index + 1 == count($this->arrayOfQuestions)) { // kalau udah soal ke 50/50
             // buat status sudah peserta menjadi sudah selesai toefl
-            $user = Auth::user()->update([
+            Auth::user()->update([
                 'status_id' => 5,
             ]);
-            $user->givePermissionTo('melihat skor');
+            $this->user->givePermissionTo('melihat skor');
             // hapus permission mengerjakan toefl supaya ga bisa ngerjain lg
-            $user->revokePermissionTo('mengerjakan toefl');
+            $this->user->revokePermissionTo('mengerjakan toefl');
             // lakukan redirect
             return redirect()->to('/participant/dashboard');
         } else {
@@ -134,13 +136,13 @@ class Section3 extends Component
         // ketika baru akan mengerjakan section 3, maka last_question = 39 yg diambil dari index array terakhir soal section 2. bisa juga dia selesai section 2 krn kehabisan waktu atau last_minute <=0. ini mestinya bisa pakai last(), tp ga bisa, jd urutin dulu kebalik lalu first
         $lastQuestion = Auth::user()->questions()->orderBy('passage_id', 'DESC')->orderBy('id', 'DESC')->first();
 
-        // kalau section_id dari soal sebelumnya adalah 3, maka timer set pada menit terakhir dan index pada soal terakhir + 1. sedangkan jika bukan section_2 (section_1) maka index dibuat 0 atau index pertama, dan timer mengikuti nilai default.
+        // kalau section_id dari soal sebelumnya adalah 3, maka timer set pada menit terakhir dan index pada soal terakhir + 1. sedangkan jika bukan section_3 (section_2) maka index dibuat 0 atau index pertama, dan timer mengikuti nilai default.
         if ($lastQuestion->section_id == 3) {
             $this->index = $lastQuestion->pivot->last_question + 1;
             $this->timer = $lastQuestion->pivot->last_minute;
         } else {
             $this->index = 0;
-            $this->timer = 3300;
+            $this->timer = 30;
         }
 
         // soal yg terakhir akan ditampilkan untuk dijawab
@@ -149,13 +151,13 @@ class Section3 extends Component
 
     public function mount()
     {
-        $this->toefl = Auth::user()->toefl()->first(); // ambil toefl
+        $this->user = Auth::user();
+        $this->toefl = $this->user->toefl()->first(); // ambil toefl
         // ambil semua question_id dari section 3 ke sebuah array. Array akan digunakan untuk menampilkan pertanyaan satu persatu dgn index terdepan. urutkan pertama kali berdasarkan passage_id lalu id soal
         $this->arrayOfQuestions=$this->toefl->questions()->where('section_id', 3)->orderBy('passage_id', 'ASC')->orderBy('id')->pluck('id')->toArray();
 
         // soal2 yg pernah dijawab oleh user akan dijadikan navigasi
-        $this->questions_answered = Auth::user()->questions()->with('passage')->where('section_id', 3)->orderBy('passage_id', 'ASC')->orderBy('id')->get();
-        // dd($this->questions_answered);
+        $this->questions_answered = $this->user->questions()->with('passage')->where('section_id', 3)->orderBy('passage_id', 'ASC')->orderBy('id')->get();
 
         $this->lastQuestion();
     }

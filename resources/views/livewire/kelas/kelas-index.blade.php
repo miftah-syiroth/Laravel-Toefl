@@ -1,7 +1,7 @@
 <div>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('INDEX KELAS') }}
+            {{ __('KELOLA KELAS') }}
         </h2>
     </x-slot>
 
@@ -9,7 +9,7 @@
         <div class="max-w-full mx-auto sm:px-6 lg:px-8">
             <div class="flex flex-row justify-between">
                 <div class="mb-4">
-                    <a href="/admin/kelas/create" class="px-2 py-1 border border-transparent text-base font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-300">Create New Toefl</a>
+                    <a href="/admin/kelas/create" class="px-2 py-1 border border-transparent text-base font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-300">Buat Kelas Baru</a>
                 </div>
                 <div class="flex flex-row">
                     <div class="bg-gray-200 px-2 py-2 mb-4 rounded-lg mr-2">

@@ -25,8 +25,6 @@ class CreateSection2 extends Component
     public $question, $imageable, $option_a, $option_b, $option_c, $option_d, $key_answer;
 
     protected $rules = [
-        'question' => 'required',
-        // 'imageable' => 'image',
         'option_a' => 'required',
         'option_b' => 'required',
         'option_c' => 'required',
@@ -78,11 +76,14 @@ class CreateSection2 extends Component
                 'imageable' => 'required|image'
             ]);
             $this->imageable = $this->imageable->store("toefl/images/question/written-expression");
+        } else { # validasi question, karna hanya structure yg pakai question text
+            $this->validate([
+                'question' => 'required',
+            ]);
         }
 
-        # cek udah komplet atau belum, kalau udah ga bisa create baris baru
+        # cek udah komplet atau belum, kalau udah, ga bisa create baris baru
         if (!$this->isComplete) { # selama belum komplit, bisa buat baru
-            // di sini cek apakah ada input image
 
             $this->toefl->questions()->create([
                 'sub_section_id' => $this->sub_section->id,
@@ -138,11 +139,11 @@ class CreateSection2 extends Component
         $this->reset(['question', 'imageable', 'option_a', 'option_b', 'option_c', 'option_d', 'key_answer', 'question_selected']);
     }
 
-    public function checkPreviousSection($toefl)
+    public function checkPreviousSection()
     {
-        $count = $toefl->questions()->where('section_id', 1)->count();
-        if ($count < 50) {
-            return redirect()->back()->with('command', 'Mulai dari Section 1');
+        if ($this->toefl->questions()->where('section_id', 1)->count() < 50) {
+            session()->flash('message', 'Mulai dari Section 1');
+            return redirect()->to('/admin/toefls/' . $this->toefl->id);
         }
     }
     
@@ -164,7 +165,7 @@ class CreateSection2 extends Component
         $this->toefl = $toefl;
 
         # pembuatan soal dibuat urut dari section 1 s,d 3. Maka cek apakah section sebelumnya sudah full atau blm.
-        $this->checkPreviousSection($toefl);
+        $this->checkPreviousSection();
 
         $this->questions = $toefl->questions()->where('section_id', 2)->get();
 

@@ -10,7 +10,7 @@ use Livewire\Component;
 class Section2 extends Component
 {
     // 1500
-    public $timer = 1500, $menit, $detik;
+    public $timer, $menit, $detik;
 
     public $toefl;
     public $arrayOfQuestions; // array of id of questions
@@ -74,7 +74,7 @@ class Section2 extends Component
             $this->timer = $lastQuestion->pivot->last_minute;
         } else {
             $this->index = 0;
-            $this->timer = 1500;
+            $this->timer = 15;
         }
 
         // soal yg terakhir akan ditampilkan untuk dijawab
@@ -83,8 +83,7 @@ class Section2 extends Component
 
     public function save()
     {
-        $this->validate();
-        $this->validate();
+        // $this->validate();
         if ($this->question_selected) {
             $this->updateAnswer();
         } else {
@@ -126,7 +125,7 @@ class Section2 extends Component
 
         $this->reset('answer');
 
-        // cek if sudah soal terakhir, jika terakhir akan dioper ke section 2
+        // cek if sudah soal terakhir, jika terakhir akan dioper ke section 3
         if ($this->index + 1 == count($this->arrayOfQuestions)) { // kalau udah soal ke 50/50
             // lakukan emit ke komponen main
             return redirect()->to('/participant/toefls/reading-comprehension');

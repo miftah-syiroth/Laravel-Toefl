@@ -7,6 +7,9 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="my-2">
+                <a href="/admin/toefls/{{ $toefl->id }}" type="submit" class="rounded-lg px-3 py-1 bg-indigo-600 text-white hover:bg-red-300">Kembali</a>
+            </div>
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg px-6 py-6">
                 <div class="flex flex-row">
                     <div class="border rounded-xl py-2 px-6 w-full mr-2">
@@ -24,13 +27,7 @@
                         <div class="mt-4 max-w-md">
                             <div class="grid grid-cols-1 gap-6">
                                 <form wire:submit.prevent="save">
-                                    <label class="block mt-2">
-                                        <span class="text-gray-700">Pertanyaan</span>
-                                        @error('question')
-                                            <div class="text-red-600 text-sm font-weight-bold">{{ $message }}</div>
-                                        @enderror
-                                        <textarea wire:model="question" id="question" name="question" class="mt-0 block w-full px-0.5 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-black" rows="2"></textarea>
-                                    </label>
+                                    
 
                                     {{-- input gambar hanya utk written expression --}}
                                     @if ($sub_section->id == 2) 
@@ -44,6 +41,14 @@
                                         @enderror
                                         <input wire:model="imageable" type="file" class="mt-1 block w-full" />
                                       </label>
+                                    @else
+                                    <label class="block mt-2">
+                                        <span class="text-gray-700">Pertanyaan</span>
+                                        @error('question')
+                                            <div class="text-red-600 text-sm font-weight-bold">{{ $message }}</div>
+                                        @enderror
+                                        <textarea wire:model="question" id="question" name="question" class="mt-0 block w-full px-0.5 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-black" rows="2"></textarea>
+                                    </label>
                                     @endif
                                    
                                     <label class="block mt-2">

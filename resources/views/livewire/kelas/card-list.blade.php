@@ -101,14 +101,14 @@
                 <dl class="border-t">
                     <div class="bg-gray-50 px-4 py-5 sm:px-6">
                         <dt class="text-sm font-medium text-gray-500">
-                            {{-- kalau kuota penuh atau batas pendaftaran selesai --}}
-                            @if ($kelas->register_status_id == 2 || $kelas->register_status_id == 3)
-                                {{ $kelas->registerStatus->status }}
-                            @else
-                            <a href="/participant/{{ $kelas->id }}/register" class="bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg py-1 px-2">
-                                Daftar
-                            </a>
-                            @endif
+                            {{ $kelas->registerStatus->status }}
+                            @unless ($kelas->register_status_id == 2 || $kelas->register_status_id == 3)
+                                @unless (Auth::check())
+                                <a href="/participant/{{ $kelas->id }}/register" class="bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg py-1 px-2">
+                                    Daftar
+                                </a>
+                                @endunless
+                            @endunless
                         </dt>
                     </div>
                 </dl>

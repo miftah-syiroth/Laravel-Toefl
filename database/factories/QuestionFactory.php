@@ -22,9 +22,9 @@ class QuestionFactory extends Factory
     public function definition()
     {
         return [
-            'toefl_id' => 5,
+            'toefl_id' => 13,
             'section_id' => 3,
-            'passage_id' => 30,
+            'passage_id' => 86,
             'question' => $this->faker->sentence(),
             'option_a' => $this->faker->sentence(),
             'option_b' => $this->faker->sentence(),

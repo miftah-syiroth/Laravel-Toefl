@@ -71,7 +71,7 @@ class KelasShow extends Component
         if (now() < $this->kelas->pendaftaran) {
             $this->button_visible = true;
         } else {
-            $this->button_visible = false;
+            $this->button_visible = true;
         }
     }
 
