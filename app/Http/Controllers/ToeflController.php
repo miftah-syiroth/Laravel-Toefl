@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreToeflRequest;
+use App\Http\Requests\UpdateToeflRequest;
 use App\Models\Question;
 use App\Models\Section;
 use App\Models\Toefl;
@@ -22,21 +24,23 @@ class ToeflController extends Controller
         return view('admin.toefl.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreToeflRequest $request)
     {
         // validasi dulu
-        $attributes = $request->validate([
-            'title' => 'required|unique:toefls|max:255|string',
-            'section_1_imageable' => 'required|image',
-            'section_1_track' => 'required|mimes:mp3',
-            'part_a_imageable' => 'required|image',
-            'part_b_imageable' => 'required|image',
-            'part_c_imageable' => 'required|image',
-            'section_2_imageable' => 'required|image',
-            'structure_imageable' => 'required|image',
-            'written_expression_imageable' => 'required|image',
-            'section_3_imageable' => 'required|image',
-        ]);
+        // $attributes = $request->validate([
+        //     'title' => 'required|unique:toefls|max:255|string',
+        //     'section_1_imageable' => 'required|image',
+        //     'section_1_track' => 'required|mimes:mp3',
+        //     'part_a_imageable' => 'required|image',
+        //     'part_b_imageable' => 'required|image',
+        //     'part_c_imageable' => 'required|image',
+        //     'section_2_imageable' => 'required|image',
+        //     'structure_imageable' => 'required|image',
+        //     'written_expression_imageable' => 'required|image',
+        //     'section_3_imageable' => 'required|image',
+        // ]);
+
+        $attributes = $request->all();
 
         // simpan audio full section 1 dan ambil pathnya
         $attributes['section_1_track'] = $attributes['section_1_track']->store("toefl/tracks/listening");
@@ -108,21 +112,23 @@ class ToeflController extends Controller
     }
 
     // menyimpan data dari form edit
-    public function update(Request $request, Toefl $toefl)
+    public function update(UpdateToeflRequest $request, Toefl $toefl)
     {
         // validasi
-        $attributes = $request->validate([
-            'title' => 'required|max:255|string',
-            'section_1_imageable' => 'image',
-            'section_1_track' => 'mimes:mp3',
-            'part_a_imageable' => 'image',
-            'part_b_imageable' => 'image',
-            'part_c_imageable' => 'image',
-            'section_2_imageable' => 'image',
-            'structure_imageable' => 'image',
-            'written_expression_imageable' => 'image',
-            'section_3_imageable' => 'image',
-        ]);
+        // $attributes = $request->validate([
+        //     'title' => 'required|max:255|string',
+        //     'section_1_imageable' => 'image',
+        //     'section_1_track' => 'mimes:mp3',
+        //     'part_a_imageable' => 'image',
+        //     'part_b_imageable' => 'image',
+        //     'part_c_imageable' => 'image',
+        //     'section_2_imageable' => 'image',
+        //     'structure_imageable' => 'image',
+        //     'written_expression_imageable' => 'image',
+        //     'section_3_imageable' => 'image',
+        // ]);
+
+        $attributes = $request->all();
 
         $attributes = $this->checkUploadedFile($attributes, $toefl);
 
