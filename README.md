@@ -1,1 +1,1 @@
-Ini adalah program toefl ITP berbasis web menggunakan laravel jetstram + livewire
+made when I first learnt programming, didn't know github and was scared about javascript
